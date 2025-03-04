@@ -13,7 +13,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_principal)
 
-        val imageButton = findViewById<ImageButton>(R.id.imageButton)
+        val imageButton = findViewById<ImageButton>(R.id.imageButton1)
         imageButton.setOnClickListener{
             val intent = Intent(this, PantallaProductosActivity::class.java)
             startActivity(intent)
