@@ -148,7 +148,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="726dp" />
+        app:layout_constraintGuide_begin="699dp" />
 
     <Button
         android:id="@+id/button2"
@@ -171,8 +171,8 @@
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="1245dp"
-        android:layout_height="416dp"
+        android:layout_width="1224dp"
+        android:layout_height="377dp"
         android:background="@drawable/borde_color_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
