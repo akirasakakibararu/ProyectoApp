@@ -6,4 +6,11 @@
     <string name="botonCancelar">Cancelar</string>
     <string name="botonFiltrar">Filtrar</string>
     <string name="botonOpciones">Opciones</string>
+    <string name="botonNuevoProducto">Nuevo Producto</string>
+    <string name="botonNombre">Nombre</string>
+    <string name="botonCantidad">Cantidad</string>
+    <string name="botonCantidadMinima">Cantidad Mínima</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
