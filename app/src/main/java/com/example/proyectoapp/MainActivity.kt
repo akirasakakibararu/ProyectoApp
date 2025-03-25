@@ -40,7 +40,8 @@ class MainActivity : AppCompatActivity() {
                 users = response.body() ?: emptyList()
                 users.forEach { Log.i("Usuarios:", it.toString()) }
 
-                val intent = Intent(this@MainActivity, PantallaProductosActivity::class.java)
+                val intent = Intent(this@MainActivity, PantallaPrincipalActivity::class.java)
+
                 startActivity(intent)
             }
 
