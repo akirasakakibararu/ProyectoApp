@@ -2,11 +2,11 @@ package com.example.proyectoapp.retrofit.objetos
 
 data class Usuario(
     val idUsuario: Int,
-    val nombre: String,
-    val email: String,
-    val contrasena: String,
-    val rol: String,
-    val fotoPerfil: String,
+    var nombre: String,
+    var email: String,
+    var contrasena: String,
+    var rol: String,
+    var fotoPerfil: String,
     val habilitado: Boolean
 ) {
 

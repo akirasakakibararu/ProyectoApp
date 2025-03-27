@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.picasso2.okhttp3.downloader)
+    implementation(libs.converter.scalars)
 }

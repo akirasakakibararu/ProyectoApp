@@ -63,9 +63,6 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                 val myadapter = UserAdapter(this@PantallaPrincipalActivity, users)
                 listado.adapter = myadapter
 
-                //    val intent = Intent(this@PantallaPrincipalActivity, PantallaProductosActivity::class.java)
-
-                //  startActivity(intent)
             }
 
             override fun onFailure(call: Call<List<Usuario>>, t: Throwable) {
@@ -73,4 +70,5 @@ class PantallaPrincipalActivity : AppCompatActivity() {
             }
         })
     }
+
 }
