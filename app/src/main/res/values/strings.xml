@@ -14,4 +14,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="buttonUser">foto</string>
+    <integer name="columnCount">1</integer>
+    <integer name="rowCount">1</integer>
 </resources>
