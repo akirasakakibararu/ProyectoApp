@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlinKapt)
 }
 
 android {
@@ -56,4 +57,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.picasso2.okhttp3.downloader)
     implementation(libs.converter.scalars)
+    implementation(libs.glide)
+    implementation(libs.picasso)
+
 }

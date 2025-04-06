@@ -1,5 +1,7 @@
 package com.example.proyectoapp.retrofit.instances
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -13,5 +15,9 @@ object UserInterface {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    fun Context.getAuthToken(): String? {
+        return getSharedPreferences("app_prefs", MODE_PRIVATE)
+            .getString("auth_token", null)
     }
 }

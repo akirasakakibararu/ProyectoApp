@@ -1,5 +1,6 @@
 package com.example.proyectoapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -11,9 +12,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.proyectoapp.retrofit.endPoints.ProductoInterface
 import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
+import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
 import com.example.proyectoapp.retrofit.objetos.Productos
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +26,9 @@ class PantallaProductosActivity : AppCompatActivity() {
 
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
-
+    private val productoApi: ProductoInterface =
+        UserInterface.retrofit.create(ProductoInterface::class.java)
+    private lateinit var productos: List<Productos>
     private lateinit var gridLayout: GridLayout
     private lateinit var producto: Productos
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,31 +49,36 @@ class PantallaProductosActivity : AppCompatActivity() {
         loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
         gridLayout = findViewById(R.id.idGridLayout)
-        producto = Productos(1, "Producto 1", 10.0, "Descripción 1", "imagen1.jpg", 10, 5, true, 1)
-        // Simulacion de objetos con imágenes
-        val productos = listOf(
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe,
-            R.drawable.cafe
-        )
 
-        mostrarProductos(productos)
+
     }
 
-    private fun mostrarProductos(productos: List<Int>) {
+    private fun getAllProductos() {
+        val token = "Bearer ${getAuthToken()}"
+
+        val call = productoApi.getAllProductos(token)
+        call.enqueue(object : Callback<List<Productos>> {
+            override fun onResponse(
+                call: Call<List<Productos>>,
+                response: Response<List<Productos>>
+            ) {
+                if (!response.isSuccessful) {
+                    Log.e("Response err:", response.message())
+                    return
+                }
+                productos = response.body() ?: emptyList()
+                productos.forEach { Log.i("Productos:", it.toString()) }
+                mostrarProductos(productos)
+            }
+
+            override fun onFailure(call: Call<List<Productos>>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun mostrarProductos(productos: List<Productos>) {
         gridLayout.removeAllViews()
         gridLayout.columnCount = 5
 
@@ -87,7 +98,7 @@ class PantallaProductosActivity : AppCompatActivity() {
 
 
             val nombre = TextView(this).apply {
-                text = "Producto"
+                text = producto.nombre
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 textSize = 18f
                 gravity = Gravity.CENTER
@@ -99,7 +110,7 @@ class PantallaProductosActivity : AppCompatActivity() {
 
 
             val imageView = ImageView(this).apply {
-                setImageResource(producto)
+                setImageResource(R.drawable.cafe)
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 adjustViewBounds = true
                 layoutParams = LinearLayout.LayoutParams(
@@ -107,7 +118,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                     250
                 ).apply { gravity = Gravity.CENTER }
             }
-
+            Picasso.get().load(producto.foto).into(imageView);
 
             val contenedorBotones = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -123,7 +134,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                 text = "-"
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 setOnClickListener {
                     Log.i("Producto", "Disminuir producto")
                 }
@@ -131,17 +143,24 @@ class PantallaProductosActivity : AppCompatActivity() {
 
 
             val numero = EditText(this).apply {
-                setText("1") // Valor inicial
+                setText(producto.stockActual.toString())
                 gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             }
 
 
             val btnMas = Button(this).apply {
                 text = "+"
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_green_light))
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        android.R.color.holo_green_light
+                    )
+                )
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 setOnClickListener {
                     Log.i("Producto", "Aumentar producto")
                 }
@@ -176,7 +195,9 @@ class PantallaProductosActivity : AppCompatActivity() {
                     getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
                         .putString("auth_token", it)
                         .apply()
+                    getAllProductos()
                 }
+
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
