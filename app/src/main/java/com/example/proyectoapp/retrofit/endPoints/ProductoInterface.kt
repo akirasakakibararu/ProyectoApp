@@ -13,9 +13,14 @@ interface ProductoInterface {
     @GET("productos")
     fun getAllProductos(@Header("Authorization") token: String): Call<List<Productos>>
 
-    @POST("productos/actualizar")
+    @POST("productos/actualizar/productos")
     fun actualizarProductos(
         @Header("Authorization") token: String,
         @Body product: List<Productos>
+    ): Call<String>
+    @POST("productos/añadir/producto")
+    fun añadirProducto(
+        @Header("Authorization") token: String,
+        @Body product: Productos
     ): Call<String>
 }

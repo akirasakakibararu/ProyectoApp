@@ -32,6 +32,7 @@ class PantallaProductosActivity : AppCompatActivity() {
     private val productoApi: ProductoInterface =
         UserInterface.retrofit.create(ProductoInterface::class.java)
     private lateinit var productos: List<Productos>
+    private lateinit var productoA: Productos
     private lateinit var gridLayout: GridLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,27 +61,6 @@ class PantallaProductosActivity : AppCompatActivity() {
         }
     }
 
-    private fun actualizarProductos() {
-        val token = "Bearer ${getAuthToken()}"
-        val call = productoApi.actualizarProductos(token, productos)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (!response.isSuccessful) {
-                    Log.e("Update Error:", response.message())
-                    return
-                }
-                response.body()?.let {
-                    Log.i("Respuesta:", it)
-                }
-
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("Error:", t.message ?: "Error desconocido")
-            }
-        })
-
-    }
 
     private fun getAllProductos() {
         val token = "Bearer ${getAuthToken()}"
@@ -129,6 +109,13 @@ class PantallaProductosActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 300
             ).apply { gravity = Gravity.CENTER }
+            setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+            setOnClickListener {
+                Log.i("Producto", "Botón AÑADIR pulsado")
+
+                añadirProducto()
+
+            }
 
 
         }
@@ -280,5 +267,49 @@ class PantallaProductosActivity : AppCompatActivity() {
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })
+    }
+
+    private fun actualizarProductos() {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.actualizarProductos(token, productos)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Update Error:", response.message())
+                    return
+                }
+                response.body()?.let {
+                    Log.i("Respuesta:", it)
+                }
+
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+
+    }
+
+    private fun añadirProducto() {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.añadirProducto(token, productoA)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Update Error:", response.message())
+                    return
+                }
+                response.body()?.let {
+                    Log.i("Respuesta:", it)
+                }
+
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+
     }
 }
