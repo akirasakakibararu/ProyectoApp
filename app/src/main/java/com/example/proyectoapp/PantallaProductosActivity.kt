@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.proyectoapp.retrofit.adapter.anadirProductDialog
 import com.example.proyectoapp.retrofit.endPoints.ProductoInterface
 import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
@@ -24,6 +25,8 @@ import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.graphics.BitmapFactory
+import android.util.Base64
 
 class PantallaProductosActivity : AppCompatActivity() {
 
@@ -59,6 +62,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             productos.forEach { Log.i("Productos:", it.toString()) }
             actualizarProductos()
         }
+
     }
 
 
@@ -112,9 +116,12 @@ class PantallaProductosActivity : AppCompatActivity() {
             setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
             setOnClickListener {
                 Log.i("Producto", "Botón AÑADIR pulsado")
-
-                añadirProducto()
-
+                val dialog = anadirProductDialog { nuevoProducto ->
+                    productoA = nuevoProducto
+                    añadirProducto()
+                    getAllProductos()
+                }
+                dialog.show(supportFragmentManager, "AñadirProductoDialog")
             }
 
 
@@ -157,7 +164,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                     250
                 ).apply { gravity = Gravity.CENTER }
             }
-            Picasso.get().load(producto.foto).into(imageView);
+            cargarImagenDesdeString(producto.foto, imageView)
+
 
             val contenedorBotones = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -312,4 +320,35 @@ class PantallaProductosActivity : AppCompatActivity() {
         })
 
     }
+    fun identificarImagen(input: String): String {
+        return when {
+            input.startsWith("data:image", ignoreCase = true) && input.contains("base64,") -> "base64"
+            input.startsWith("http", ignoreCase = true) -> "url"
+            else -> "desconocido"
+        }
+    }
+    fun cargarImagenDesdeString(input: String, imageView: ImageView) {
+        when (identificarImagen(input)) {
+            "url" -> {
+                Picasso.get().load(input).into(imageView)
+            }
+            "base64" -> {
+                try {
+                    val base64Data = input.substringAfter("base64,")
+                    val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                    val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    imageView.setImageBitmap(bitmap)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    // Puedes mostrar una imagen de error si falla el decode
+                    imageView.setImageResource(R.drawable.cafe)
+                }
+            }
+            else -> {
+                // Imagen desconocida
+                imageView.setImageResource(R.drawable.cafe)
+            }
+        }
+    }
+
 }
