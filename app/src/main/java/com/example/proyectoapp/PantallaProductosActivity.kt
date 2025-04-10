@@ -27,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.BitmapFactory
 import android.util.Base64
+import com.example.proyectoapp.retrofit.adapter.editarProductDialog
 
 class PantallaProductosActivity : AppCompatActivity() {
 
@@ -155,7 +156,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             }
 
 
-            val imageView = ImageView(this).apply {
+            val imageView = ImageButton(this).apply {
                 setImageResource(R.drawable.cafe)
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 adjustViewBounds = true
@@ -163,9 +164,20 @@ class PantallaProductosActivity : AppCompatActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     250
                 ).apply { gravity = Gravity.CENTER }
+                setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+
             }
             cargarImagenDesdeString(producto.foto, imageView)
+            imageView.setOnClickListener {
+                Log.i("Producto", "Botón IMAGEN pulsado")
+                productoA = producto
+                val dialog = editarProductDialog(productoA) { productoEditado ->
+                    editarProducto(productoEditado)
+                    mostrarProductos(productos)
 
+                }
+                dialog.show(supportFragmentManager, "EditarProductoDialog")
+            }
 
             val contenedorBotones = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -298,7 +310,26 @@ class PantallaProductosActivity : AppCompatActivity() {
         })
 
     }
+    private fun editarProducto(producto: Productos) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.editarProducto(token, producto)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Update Producto Error:", response.message())
+                    return
+                }
+                response.body()?.let {
+                    Log.i("Producto actualizado:", it)
+                    Toast.makeText(this@PantallaProductosActivity, "Producto actualizado", Toast.LENGTH_SHORT).show()
+                }
+            }
 
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
     private fun añadirProducto() {
         val token = "Bearer ${getAuthToken()}"
         val call = productoApi.añadirProducto(token, productoA)

@@ -23,4 +23,9 @@ interface ProductoInterface {
         @Header("Authorization") token: String,
         @Body product: Productos
     ): Call<String>
+    @POST("productos/editar/producto")
+    fun editarProducto(
+        @Header("Authorization") token: String,
+        @Body product: Productos
+    ): Call<String>
 }

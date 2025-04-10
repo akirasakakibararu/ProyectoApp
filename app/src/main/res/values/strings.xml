@@ -18,11 +18,14 @@
     <integer name="rowCount">1</integer>
     <string name="nombre">Nombre</string>
     <string name="nuevo">Nuevo Producto</string>
+    <string name="editar">Editar Producto</string>
     <string name="precio">Precio</string>
     <string name="stock">Cantidad</string>
     <string name="stockMin">Cantidad Minima</string>
     <string name="preciou">Precio Unitario</string>
-
+    <string name="cantidad">Cantidad</string>
+    <string name="descripcion">Descripción</string>
+    <string name="edit">Editar</string>
     <string name="anadir">Añadir</string>
     <string name="cancelar">Cancelar</string>
     <string name="filtrar">Filtrar</string>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btnCancel2"
+        android:layout_width="212dp"
+        android:layout_height="78dp"
+        android:layout_marginBottom="24dp"
+
+        android:backgroundTint="#EC407A"
+        android:text="@string/cancelar"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAnadir2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/botonFoto2"
+        app:layout_constraintVertical_bias="0.618" />
+
+    <EditText
+        android:id="@+id/editNombre2"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/nombre"
+        app:layout_constraintBottom_toTopOf="@+id/editDescripcion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editCantidadMin2"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/stockMin"
+        app:layout_constraintBottom_toTopOf="@+id/btnAnadir2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCantidad2" />
+
+    <Button
+        android:id="@+id/btnAnadir2"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#26C6DA"
+        android:text="@string/edit"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnCancel2"
+        app:layout_constraintTop_toBottomOf="@+id/editCantidadMin2" />
+
+    <EditText
+        android:id="@+id/editPrecio2"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/preciou"
+        app:layout_constraintBottom_toTopOf="@+id/editCantidad2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDescripcion" />
+
+    <EditText
+        android:id="@+id/editCantidad2"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/stock"
+        app:layout_constraintBottom_toTopOf="@+id/editCantidadMin2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPrecio2" />
+
+    <EditText
+        android:id="@+id/editDescripcion"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/descripcion"
+        app:layout_constraintBottom_toTopOf="@+id/editPrecio2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNombre2" />
+
+    <ImageButton
+        android:id="@+id/botonFoto2"
+        android:layout_width="333dp"
+        android:layout_height="344dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/buttonUser"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editPrecio2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.523"
+        app:srcCompat="@drawable/masomenos" />
+
+    <TextView
+        android:id="@+id/txtTitulo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/editar"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.056" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

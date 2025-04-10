@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputType
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,7 +42,11 @@ class anadirProductDialog(
         val boton = view.findViewById<Button>(R.id.btnAnadir)
         val btnCancelar = view.findViewById<Button>(R.id.btnCancel)
         imageButtonLogo = view.findViewById(R.id.botonFoto)
+        nombre.inputType = InputType.TYPE_CLASS_TEXT
 
+        cantidad.inputType = InputType.TYPE_CLASS_NUMBER
+        cantidadMin.inputType = InputType.TYPE_CLASS_NUMBER
+        precio.inputType = InputType.TYPE_CLASS_NUMBER
         val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
             .create()
@@ -69,6 +74,15 @@ class anadirProductDialog(
         imageButtonLogo.setOnClickListener {
             takePicture()
         }
+        // Lista de todos los EditTexts a limpiar
+        val editTexts = listOf(
+            nombre,
+            cantidad,
+            cantidadMin,
+            precio
+        )
+        // Aplicar la función de limpieza a todos los EditTexts
+        setOnFocusClearListener(editTexts)
         return dialog
     }
     override fun onActivityResult(
@@ -96,7 +110,7 @@ class anadirProductDialog(
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
     @SuppressLint("QueryPermissionsNeeded")
-    private fun takePicture() {
+    fun takePicture() {
 
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -104,6 +118,15 @@ class anadirProductDialog(
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
         } catch (e: Exception) {
             Log.e("Error", "No se puede abrir la cámara")
+        }
+    }
+    fun setOnFocusClearListener(editTexts: List<EditText>) {
+        editTexts.forEach { editText ->
+            editText.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    editText.text.clear()
+                }
+            }
         }
     }
 }
