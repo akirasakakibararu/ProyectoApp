@@ -75,9 +75,9 @@ class editarProductDialog(
                 descripcion.text.toString(),
                 fotoBase64,
                 cantidad.text.toString().toIntOrNull() ?: 0,
-                cantidadMin.text.toString().toIntOrNull() ?: 0
+                cantidadMin.text.toString().toIntOrNull() ?: 0,
+                producto.habilitado
             )
-
             onProductoEditado(productoEditado)
             dialog.dismiss()
         }

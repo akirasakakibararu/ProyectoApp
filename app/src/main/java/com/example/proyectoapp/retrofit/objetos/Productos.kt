@@ -7,6 +7,7 @@ data class Productos(
     val descripcion: String,
     val foto: String,
     var stockActual: Int,
-    val stockMinimo: Int
+    val stockMinimo: Int,
+    val habilitado: Boolean
 ) {
 }

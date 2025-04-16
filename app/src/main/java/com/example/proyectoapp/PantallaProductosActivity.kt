@@ -27,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.widget.SearchView
 import com.example.proyectoapp.retrofit.adapter.editarProductDialog
 
 class PantallaProductosActivity : AppCompatActivity() {
@@ -38,6 +39,8 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var productos: List<Productos>
     private lateinit var productoA: Productos
     private lateinit var gridLayout: GridLayout
+    private lateinit var searchView: SearchView
+    private lateinit var productosFiltrados: List<Productos>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.productoslista)
@@ -56,13 +59,29 @@ class PantallaProductosActivity : AppCompatActivity() {
         loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
         gridLayout = findViewById(R.id.idGridLayout)
-
+        searchView = findViewById(R.id.searchViewProductos)
         val btnEnviarFinal = findViewById<Button>(R.id.btnEnviarFinal)
         btnEnviarFinal.setOnClickListener {
             Log.i("Producto", "Botón ENVIAR FINAL pulsado")
             productos.forEach { Log.i("Productos:", it.toString()) }
             actualizarProductos()
         }
+
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val texto = newText?.lowercase() ?: ""
+                productosFiltrados = productos.filter {
+                    it.nombre.lowercase().contains(texto)
+                }
+                mostrarProductos(productosFiltrados)
+                return true
+            }
+        })
 
     }
 
@@ -121,6 +140,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                     productoA = nuevoProducto
                     añadirProducto()
                     getAllProductos()
+
                 }
                 dialog.show(supportFragmentManager, "AñadirProductoDialog")
             }
@@ -173,9 +193,10 @@ class PantallaProductosActivity : AppCompatActivity() {
                 productoA = producto
                 val dialog = editarProductDialog(productoA) { productoEditado ->
                     editarProducto(productoEditado)
-                    mostrarProductos(productos)
+                    getAllProductos()
 
                 }
+
                 dialog.show(supportFragmentManager, "EditarProductoDialog")
             }
 
@@ -313,10 +334,12 @@ class PantallaProductosActivity : AppCompatActivity() {
     private fun editarProducto(producto: Productos) {
         val token = "Bearer ${getAuthToken()}"
         val call = productoApi.editarProducto(token, producto)
+        Log.i("Producto enviado:", producto.toString())
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (!response.isSuccessful) {
                     Log.e("Update Producto Error:", response.message())
+                    Toast.makeText(this@PantallaProductosActivity, "Error al actualizar el producto", Toast.LENGTH_SHORT).show()
                     return
                 }
                 response.body()?.let {

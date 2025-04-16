@@ -60,7 +60,8 @@ class anadirProductDialog(
                 precio.text.toString().toDoubleOrNull() ?: 0.0,
                 "", fotoBase64,
                 cantidad.text.toString().toIntOrNull() ?: 0,
-                cantidadMin.text.toString().toIntOrNull() ?: 0
+                cantidadMin.text.toString().toIntOrNull() ?: 0,
+                true
 
 
 
