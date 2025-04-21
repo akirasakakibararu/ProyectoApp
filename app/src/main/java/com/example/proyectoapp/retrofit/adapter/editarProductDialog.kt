@@ -37,6 +37,8 @@ class editarProductDialog(
     private lateinit var imageButtonLogo: ImageButton
     private val anadirProductDialog: anadirProductDialog? = null
     private val pantallaProductosActivity: PantallaProductosActivity? = null
+    private var imagenCambiada=false
+    private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.editarprodcuto, null)
@@ -68,37 +70,57 @@ class editarProductDialog(
             val bitmap = (imageButtonLogo.drawable as BitmapDrawable).bitmap
             val fotoBase64 = bitmapToBase64(bitmap)
 
-            val productoEditado = Productos(
-                producto.idProducto,
-                nombre.text.toString(),
-                precio.text.toString().toDoubleOrNull() ?: 0.0,
-                descripcion.text.toString(),
-                fotoBase64,
-                cantidad.text.toString().toIntOrNull() ?: 0,
-                cantidadMin.text.toString().toIntOrNull() ?: 0,
-                producto.habilitado
-            )
-            onProductoEditado(productoEditado)
+            if(imagenCambiada){
+                val productoEditado = Productos(
+                    producto.idProducto,
+                    nombre.text.toString(),
+                    precio.text.toString().toDoubleOrNull() ?: 0.0,
+                    descripcion.text.toString(),
+                    fotoBase64,
+                    cantidad.text.toString().toIntOrNull() ?: 0,
+                    cantidadMin.text.toString().toIntOrNull() ?: 0,
+                    producto.habilitado
+                )
+                onProductoEditado(productoEditado)
+            }else{
+                val productoEditado = Productos(
+                    producto.idProducto,
+                    nombre.text.toString(),
+                    precio.text.toString().toDoubleOrNull() ?: 0.0,
+                    descripcion.text.toString(),
+                    producto.foto,
+                    cantidad.text.toString().toIntOrNull() ?: 0,
+                    cantidadMin.text.toString().toIntOrNull() ?: 0,
+                    producto.habilitado
+                )
+                onProductoEditado(productoEditado)
+            }
+
+
             dialog.dismiss()
         }
         btnCancelar.setOnClickListener {
             dialog.dismiss()
         }
         imageButtonLogo.setOnClickListener {
-            anadirProductDialog?.takePicture()
+            imagenCambiada=true
+            takePicture()
         }
-        val editTexts = listOf(
-            nombre,
-            cantidad,
-            cantidadMin,
-            precio,
-            descripcion
-        )
-        // Aplicar la función de limpieza a todos los EditTexts
-        anadirProductDialog?.setOnFocusClearListener(editTexts)
+
         return dialog
     }
-
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {//Función para recibir la foto
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val extras = data?.extras
+            val imgBitmap = extras?.get("data") as Bitmap
+            imageButtonLogo.setImageBitmap(imgBitmap)
+        }
+    }
     fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
@@ -126,7 +148,6 @@ class editarProductDialog(
                     imageboton.setImageBitmap(bitmap)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    // Puedes mostrar una imagen de error si falla el decode
                     imageboton.setImageResource(R.drawable.cafe)
                 }
             }
@@ -134,6 +155,17 @@ class editarProductDialog(
                 // Imagen desconocida
                 imageboton.setImageResource(R.drawable.cafe)
             }
+        }
+    }
+    @SuppressLint("QueryPermissionsNeeded")
+    fun takePicture() {
+
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        try {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        } catch (e: Exception) {
+            Log.e("Error", "No se puede abrir la cámara")
         }
     }
 }

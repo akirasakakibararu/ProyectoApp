@@ -52,17 +52,17 @@ class anadirProductDialog(
             .create()
 
         boton.setOnClickListener {
-            val bitmap = (imageButtonLogo.drawable as BitmapDrawable).bitmap//Obtenemos el bitmap de la imagen
+            val bitmap =
+                (imageButtonLogo.drawable as BitmapDrawable).bitmap//Obtenemos el bitmap de la imagen
             val fotoBase64 = bitmapToBase64(bitmap)//Convertimos el bitmap a Base64
             val producto = Productos(
                 0,
                 nombre.text.toString(),
                 precio.text.toString().toDoubleOrNull() ?: 0.0,
-                "", fotoBase64,
+                "Descripcion", fotoBase64,
                 cantidad.text.toString().toIntOrNull() ?: 0,
                 cantidadMin.text.toString().toIntOrNull() ?: 0,
                 true
-
 
 
             )
@@ -86,6 +86,7 @@ class anadirProductDialog(
         setOnFocusClearListener(editTexts)
         return dialog
     }
+
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
@@ -106,10 +107,12 @@ class anadirProductDialog(
         val base64 = Base64.encodeToString(byteArray, Base64.DEFAULT)
         return "data:image/png;base64,$base64"
     }
+
     fun base64ToBitmap(base64Str: String): Bitmap {//Función para convertir un Base64 a bitmap
         val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
+
     @SuppressLint("QueryPermissionsNeeded")
     fun takePicture() {
 
@@ -121,6 +124,7 @@ class anadirProductDialog(
             Log.e("Error", "No se puede abrir la cámara")
         }
     }
+
     fun setOnFocusClearListener(editTexts: List<EditText>) {
         editTexts.forEach { editText ->
             editText.setOnFocusChangeListener { _, hasFocus ->

@@ -139,7 +139,6 @@ class PantallaProductosActivity : AppCompatActivity() {
                 val dialog = anadirProductDialog { nuevoProducto ->
                     productoA = nuevoProducto
                     añadirProducto()
-                    getAllProductos()
 
                 }
                 dialog.show(supportFragmentManager, "AñadirProductoDialog")
@@ -193,8 +192,6 @@ class PantallaProductosActivity : AppCompatActivity() {
                 productoA = producto
                 val dialog = editarProductDialog(productoA) { productoEditado ->
                     editarProducto(productoEditado)
-                    getAllProductos()
-
                 }
 
                 dialog.show(supportFragmentManager, "EditarProductoDialog")
@@ -321,6 +318,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                 }
                 response.body()?.let {
                     Log.i("Respuesta:", it)
+                    Toast.makeText(this@PantallaProductosActivity, "Productos Actualizados", Toast.LENGTH_SHORT).show()
+                    getAllProductos()
                 }
 
             }
@@ -345,6 +344,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                 response.body()?.let {
                     Log.i("Producto actualizado:", it)
                     Toast.makeText(this@PantallaProductosActivity, "Producto actualizado", Toast.LENGTH_SHORT).show()
+                    getAllProductos()
+
                 }
             }
 
@@ -364,6 +365,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                 }
                 response.body()?.let {
                     Log.i("Respuesta:", it)
+                    Toast.makeText(this@PantallaProductosActivity, "Producto Añadido", Toast.LENGTH_SHORT).show()
+                    getAllProductos()
                 }
 
             }
