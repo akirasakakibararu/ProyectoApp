@@ -8,6 +8,6 @@ data class Productos(
     val foto: String,
     var stockActual: Int,
     val stockMinimo: Int,
-    val habilitado: Boolean
+    var habilitado: Boolean
 ) {
 }

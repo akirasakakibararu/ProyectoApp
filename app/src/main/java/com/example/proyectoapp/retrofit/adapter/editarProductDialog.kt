@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -25,19 +26,25 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.PantallaProductosActivity
 import com.example.proyectoapp.R
+import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
 import com.example.proyectoapp.retrofit.objetos.Productos
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 class editarProductDialog(
     var producto: Productos,
-    val onProductoEditado: (Productos) -> Unit
+    val onProductoEditado: (Productos) -> Unit,
+    val onProductoEliminado: (Int) -> Unit
 ) : DialogFragment() {
 
     private lateinit var imageButtonLogo: ImageButton
     private val anadirProductDialog: anadirProductDialog? = null
     private val pantallaProductosActivity: PantallaProductosActivity? = null
     private var imagenCambiada=false
+
     private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = LayoutInflater.from(context)
@@ -50,7 +57,14 @@ class editarProductDialog(
         val btnCancelar = view.findViewById<Button>(R.id.btnCancel2)
         val descripcion = view.findViewById<EditText>(R.id.editDescripcion)
         imageButtonLogo = view.findViewById(R.id.botonFoto2)
-
+        val btnEliminar = view.findViewById<Button>(R.id.btnCancel3)
+        val habilitado = view.findViewById<CheckBox>(R.id.checkBox)
+        habilitado.isChecked = producto.habilitado
+        habilitado.setOnCheckedChangeListener { _, isChecked ->
+            producto.habilitado = isChecked
+        }
+        nombre.inputType = InputType.TYPE_CLASS_TEXT
+        descripcion.inputType = InputType.TYPE_CLASS_TEXT
         cantidad.inputType = InputType.TYPE_CLASS_NUMBER
         cantidadMin.inputType = InputType.TYPE_CLASS_NUMBER
         precio.inputType = InputType.TYPE_CLASS_NUMBER
@@ -97,6 +111,11 @@ class editarProductDialog(
             }
 
 
+            dialog.dismiss()
+        }
+
+        btnEliminar.setOnClickListener {
+            onProductoEliminado(producto.idProducto)
             dialog.dismiss()
         }
         btnCancelar.setOnClickListener {

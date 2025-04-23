@@ -18,6 +18,8 @@
     <integer name="rowCount">1</integer>
     <string name="nombre">Nombre</string>
     <string name="nuevo">Nuevo Producto</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="desavilitar">Deshabilitar</string>
     <string name="editar">Editar Producto</string>
     <string name="precio">Precio</string>
     <string name="stock">Cantidad</string>

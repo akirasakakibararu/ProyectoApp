@@ -55,17 +55,11 @@ class PantallaProductosActivity : AppCompatActivity() {
         val id = datos?.getInt("userId")
 
         Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
-
-        loginUser(nombre.orEmpty(), contrasena.orEmpty())
+        val pass = "admin"
+        loginUser(nombre.orEmpty(), pass)
 
         gridLayout = findViewById(R.id.idGridLayout)
         searchView = findViewById(R.id.searchViewProductos)
-        val btnEnviarFinal = findViewById<Button>(R.id.btnEnviarFinal)
-        btnEnviarFinal.setOnClickListener {
-            Log.i("Producto", "Botón ENVIAR FINAL pulsado")
-            productos.forEach { Log.i("Productos:", it.toString()) }
-            actualizarProductos()
-        }
 
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -190,9 +184,14 @@ class PantallaProductosActivity : AppCompatActivity() {
             imageView.setOnClickListener {
                 Log.i("Producto", "Botón IMAGEN pulsado")
                 productoA = producto
-                val dialog = editarProductDialog(productoA) { productoEditado ->
-                    editarProducto(productoEditado)
-                }
+                val dialog = editarProductDialog(producto,
+                    onProductoEditado = { productoEditado ->
+                        editarProducto(productoEditado)
+                    },
+                    onProductoEliminado = { idProducto ->
+                        eliminarProducto(idProducto)
+                    }
+                )
 
                 dialog.show(supportFragmentManager, "EditarProductoDialog")
             }
@@ -206,12 +205,11 @@ class PantallaProductosActivity : AppCompatActivity() {
                 ).apply { setMargins(8, 8, 8, 8) }
             }
 
-            val numero = EditText(this).apply {
+            val numero = TextView(this).apply {
                 setText(producto.stockActual.toString())
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
 
-                inputType = InputType.TYPE_CLASS_NUMBER
                 gravity = Gravity.CENTER
                 layoutParams =
                     LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -226,7 +224,19 @@ class PantallaProductosActivity : AppCompatActivity() {
                 setOnClickListener {
                     Log.i("Producto", "Disminuir producto")
                     val numeroActual = numero.text.toString().toIntOrNull() ?: 0
-                    if (numeroActual <= producto.stockMinimo) {
+                    if (numeroActual <= 0) {
+                        numero.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                android.R.color.holo_red_light
+                            )
+                        )
+                        Toast.makeText(
+                            this@PantallaProductosActivity,
+                            "No hay mas Stock de este producto",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (numeroActual <= producto.stockMinimo) {
                         numero.setText((numeroActual - 1).toString())
                         producto.stockActual = numero.getText().toString().toInt()
                         numero.setTextColor(
@@ -240,10 +250,12 @@ class PantallaProductosActivity : AppCompatActivity() {
                             "Este producto se encuentra en el limite minimo",
                             Toast.LENGTH_SHORT
                         ).show()
-
+                        disminuirStock(producto.idProducto)
                     } else if (numeroActual > 0) {
                         numero.setText((numeroActual - 1).toString())
                         producto.stockActual = numero.getText().toString().toInt()
+                        disminuirStock(producto.idProducto)
+
                     }
                 }
             }
@@ -263,6 +275,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                     val numeroActual = numero.text.toString().toIntOrNull() ?: 0
                     numero.setText((numeroActual + 1).toString())
                     producto.stockActual = numero.getText().toString().toInt()
+                    aumentarStock(producto.idProducto)
                 }
             }
 
@@ -307,88 +320,181 @@ class PantallaProductosActivity : AppCompatActivity() {
         })
     }
 
+    private fun aumentarStock(idProducto: Int) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.aumentarStock(token, idProducto)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Stock aumentado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    getAllProductos()
+                } else {
+                    Log.e("Aumentar Stock Error:", response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    fun eliminarProducto(idProducto: Int) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.eliminarProducto(token, idProducto)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Producto eliminado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    getAllProductos()
+                } else {
+                    Log.e("Eliminar Error:", response.message())
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Error al eliminar",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+    private fun disminuirStock(idProducto: Int) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = productoApi.disminuirStock(token, idProducto)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@PantallaProductosActivity, "Stock disminuido", Toast.LENGTH_SHORT).show()
+                    getAllProductos()
+                } else {
+                    Log.e("Disminuir Stock Error:", response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
     private fun actualizarProductos() {
         val token = "Bearer ${getAuthToken()}"
-        val call = productoApi.actualizarProductos(token, productos)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (!response.isSuccessful) {
-                    Log.e("Update Error:", response.message())
-                    return
-                }
-                response.body()?.let {
-                    Log.i("Respuesta:", it)
-                    Toast.makeText(this@PantallaProductosActivity, "Productos Actualizados", Toast.LENGTH_SHORT).show()
-                    getAllProductos()
+        for (producto in productos) {
+            val call = productoApi.editarProducto(token, producto.idProducto, producto)
+            call.enqueue(object : Callback<Productos> {
+                override fun onResponse(call: Call<Productos>, response: Response<Productos>) {
+                    if (!response.isSuccessful) {
+                        Log.e("Update Producto Error:", response.message())
+                    }
                 }
 
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("Error:", t.message ?: "Error desconocido")
-            }
-        })
-
+                override fun onFailure(call: Call<Productos>, t: Throwable) {
+                    Log.e("Error al actualizar:", t.message ?: "Error desconocido")
+                }
+            })
+        }
+        Toast.makeText(this@PantallaProductosActivity, "Productos actualizados", Toast.LENGTH_SHORT)
+            .show()
+        getAllProductos()
     }
+
     private fun editarProducto(producto: Productos) {
         val token = "Bearer ${getAuthToken()}"
-        val call = productoApi.editarProducto(token, producto)
+        val call = productoApi.editarProducto(token, producto.idProducto, producto)
         Log.i("Producto enviado:", producto.toString())
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+
+        call.enqueue(object : Callback<Productos> {
+            override fun onResponse(call: Call<Productos>, response: Response<Productos>) {
                 if (!response.isSuccessful) {
                     Log.e("Update Producto Error:", response.message())
-                    Toast.makeText(this@PantallaProductosActivity, "Error al actualizar el producto", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Error al actualizar el producto",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return
                 }
                 response.body()?.let {
-                    Log.i("Producto actualizado:", it)
-                    Toast.makeText(this@PantallaProductosActivity, "Producto actualizado", Toast.LENGTH_SHORT).show()
+                    Log.i("Producto actualizado:", it.toString())
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Producto actualizado",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     getAllProductos()
-
                 }
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<Productos>, t: Throwable) {
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })
     }
+
     private fun añadirProducto() {
         val token = "Bearer ${getAuthToken()}"
         val call = productoApi.añadirProducto(token, productoA)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+
+        call.enqueue(object : Callback<Productos> {
+            override fun onResponse(call: Call<Productos>, response: Response<Productos>) {
                 if (!response.isSuccessful) {
-                    Log.e("Update Error:", response.message())
+                    Log.e("Añadir Producto Error:", response.message())
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Error al añadir el producto",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return
                 }
                 response.body()?.let {
-                    Log.i("Respuesta:", it)
-                    Toast.makeText(this@PantallaProductosActivity, "Producto Añadido", Toast.LENGTH_SHORT).show()
+                    Log.i("Producto añadido:", it.toString())
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Producto añadido",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     getAllProductos()
                 }
-
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<Productos>, t: Throwable) {
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })
-
     }
+
     fun identificarImagen(input: String): String {
         return when {
-            input.startsWith("data:image", ignoreCase = true) && input.contains("base64,") -> "base64"
+            input.startsWith(
+                "data:image",
+                ignoreCase = true
+            ) && input.contains("base64,") -> "base64"
+
             input.startsWith("http", ignoreCase = true) -> "url"
             else -> "desconocido"
         }
     }
+
     fun cargarImagenDesdeString(input: String, imageView: ImageView) {
         when (identificarImagen(input)) {
             "url" -> {
                 Picasso.get().load(input).into(imageView)
             }
+
             "base64" -> {
                 try {
                     val base64Data = input.substringAfter("base64,")
@@ -401,6 +507,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                     imageView.setImageResource(R.drawable.cafe)
                 }
             }
+
             else -> {
                 // Imagen desconocida
                 imageView.setImageResource(R.drawable.cafe)
