@@ -41,11 +41,9 @@ class editarProductDialog(
 ) : DialogFragment() {
 
     private lateinit var imageButtonLogo: ImageButton
-    private val anadirProductDialog: anadirProductDialog? = null
-    private val pantallaProductosActivity: PantallaProductosActivity? = null
     private var imagenCambiada=false
-
     private val REQUEST_IMAGE_CAPTURE = 1
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.editarprodcuto, null)
@@ -60,8 +58,10 @@ class editarProductDialog(
         val btnEliminar = view.findViewById<Button>(R.id.btnCancel3)
         val habilitado = view.findViewById<CheckBox>(R.id.checkBox)
         habilitado.isChecked = producto.habilitado
+
         habilitado.setOnCheckedChangeListener { _, isChecked ->
             producto.habilitado = isChecked
+            habilitado.setText(if (isChecked) "Habilitado" else "Deshabilitado")
         }
         nombre.inputType = InputType.TYPE_CLASS_TEXT
         descripcion.inputType = InputType.TYPE_CLASS_TEXT

@@ -1,6 +1,7 @@
 package com.example.proyectoapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -55,8 +56,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         val id = datos?.getInt("userId")
 
         Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
-        val pass = "admin"
-        loginUser(nombre.orEmpty(), pass)
+        loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
         gridLayout = findViewById(R.id.idGridLayout)
         searchView = findViewById(R.id.searchViewProductos)
@@ -143,155 +143,164 @@ class PantallaProductosActivity : AppCompatActivity() {
         contAñadir.addView(btnAnadir)
         gridLayout.addView(contAñadir)
         for (producto in productos) {
-
-            val contenedor = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                layoutParams = GridLayout.LayoutParams().apply {
-                    width = 400
-                    height = 500
-                    setMargins(16, 16, 16, 16)
-                }
-                gravity = Gravity.CENTER
-                setPadding(16, 16, 16, 16)
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-            }
+            if(producto.habilitado==false){
+                Log.i("Producto", "Producto deshabilitado: "+producto.nombre)
+            }else {
 
 
-            val nombre = TextView(this).apply {
-                text = producto.nombre
-                setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                textSize = 18f
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(5, 5, 5, 10) }
-            }
-
-
-            val imageView = ImageButton(this).apply {
-                setImageResource(R.drawable.cafe)
-                scaleType = ImageView.ScaleType.FIT_CENTER
-                adjustViewBounds = true
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    250
-                ).apply { gravity = Gravity.CENTER }
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-
-            }
-            cargarImagenDesdeString(producto.foto, imageView)
-            imageView.setOnClickListener {
-                Log.i("Producto", "Botón IMAGEN pulsado")
-                productoA = producto
-                val dialog = editarProductDialog(producto,
-                    onProductoEditado = { productoEditado ->
-                        editarProducto(productoEditado)
-                    },
-                    onProductoEliminado = { idProducto ->
-                        eliminarProducto(idProducto)
+                val contenedor = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    layoutParams = GridLayout.LayoutParams().apply {
+                        width = 400
+                        height = 500
+                        setMargins(16, 16, 16, 16)
                     }
-                )
-
-                dialog.show(supportFragmentManager, "EditarProductoDialog")
-            }
-
-            val contenedorBotones = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(8, 8, 8, 8) }
-            }
-
-            val numero = TextView(this).apply {
-                setText(producto.stockActual.toString())
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-                setTextColor(ContextCompat.getColor(context, android.R.color.black))
-
-                gravity = Gravity.CENTER
-                layoutParams =
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            }
-
-            val btnMenos = Button(this).apply {
-                text = "-"
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
-                setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                layoutParams =
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                setOnClickListener {
-                    Log.i("Producto", "Disminuir producto")
-                    val numeroActual = numero.text.toString().toIntOrNull() ?: 0
-                    if (numeroActual <= 0) {
-                        numero.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                android.R.color.holo_red_light
-                            )
-                        )
-                        Toast.makeText(
-                            this@PantallaProductosActivity,
-                            "No hay mas Stock de este producto",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else if (numeroActual <= producto.stockMinimo) {
-                        numero.setText((numeroActual - 1).toString())
-                        producto.stockActual = numero.getText().toString().toInt()
-                        numero.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                android.R.color.holo_red_light
-                            )
-                        )
-                        Toast.makeText(
-                            this@PantallaProductosActivity,
-                            "Este producto se encuentra en el limite minimo",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        disminuirStock(producto.idProducto)
-                    } else if (numeroActual > 0) {
-                        numero.setText((numeroActual - 1).toString())
-                        producto.stockActual = numero.getText().toString().toInt()
-                        disminuirStock(producto.idProducto)
-
-                    }
+                    gravity = Gravity.CENTER
+                    setPadding(16, 16, 16, 16)
+                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
                 }
-            }
-            val btnMas = Button(this).apply {
-                text = "+"
-                setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        android.R.color.holo_green_light
+
+
+                val nombre = TextView(this).apply {
+                    text = producto.nombre
+                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                    textSize = 18f
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply { setMargins(5, 5, 5, 10) }
+                }
+
+
+                val imageView = ImageButton(this).apply {
+                    setImageResource(R.drawable.cafe)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    adjustViewBounds = true
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        250
+                    ).apply { gravity = Gravity.CENTER }
+                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+
+                }
+                cargarImagenDesdeString(producto.foto, imageView)
+                imageView.setOnClickListener {
+                    Log.i("Producto", "Botón IMAGEN pulsado")
+                    productoA = producto
+                    val dialog = editarProductDialog(producto,
+                        onProductoEditado = { productoEditado ->
+                            editarProducto(productoEditado)
+                        },
+                        onProductoEliminado = { idProducto ->
+                            eliminarProducto(idProducto)
+                        }
                     )
-                )
-                setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                layoutParams =
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                setOnClickListener {
-                    Log.i("Producto", "Aumentar producto")
-                    val numeroActual = numero.text.toString().toIntOrNull() ?: 0
-                    numero.setText((numeroActual + 1).toString())
-                    producto.stockActual = numero.getText().toString().toInt()
-                    aumentarStock(producto.idProducto)
+
+                    dialog.show(supportFragmentManager, "EditarProductoDialog")
                 }
+
+                val contenedorBotones = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply { setMargins(8, 8, 8, 8) }
+                }
+
+                val numero = TextView(this).apply {
+                    setText(producto.stockActual.toString())
+                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
+
+                    gravity = Gravity.CENTER
+                    layoutParams =
+                        LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                }
+
+                val btnMenos = Button(this).apply {
+                    text = "-"
+                    setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            android.R.color.holo_red_light
+                        )
+                    )
+                    setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                    layoutParams =
+                        LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                    setOnClickListener {
+                        Log.i("Producto", "Disminuir producto")
+                        val numeroActual = numero.text.toString().toIntOrNull() ?: 0
+                        if (numeroActual <= 0) {
+                            numero.setTextColor(
+                                ContextCompat.getColor(
+                                    context,
+                                    android.R.color.holo_red_light
+                                )
+                            )
+                            Toast.makeText(
+                                this@PantallaProductosActivity,
+                                "No hay mas Stock de este producto",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else if (numeroActual <= producto.stockMinimo) {
+                            numero.setText((numeroActual - 1).toString())
+                            producto.stockActual = numero.getText().toString().toInt()
+                            numero.setTextColor(
+                                ContextCompat.getColor(
+                                    context,
+                                    android.R.color.holo_red_light
+                                )
+                            )
+                            Toast.makeText(
+                                this@PantallaProductosActivity,
+                                "Este producto se encuentra en el limite minimo",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            disminuirStock(producto.idProducto)
+                        } else if (numeroActual > 0) {
+                            numero.setText((numeroActual - 1).toString())
+                            producto.stockActual = numero.getText().toString().toInt()
+                            disminuirStock(producto.idProducto)
+
+                        }
+                    }
+                }
+                val btnMas = Button(this).apply {
+                    text = "+"
+                    setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            android.R.color.holo_green_light
+                        )
+                    )
+                    setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                    layoutParams =
+                        LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                    setOnClickListener {
+                        Log.i("Producto", "Aumentar producto")
+                        val numeroActual = numero.text.toString().toIntOrNull() ?: 0
+                        numero.setText((numeroActual + 1).toString())
+                        producto.stockActual = numero.getText().toString().toInt()
+                        aumentarStock(producto.idProducto)
+                    }
+                }
+
+                //contenedor de botones
+                contenedorBotones.addView(btnMenos)
+                contenedorBotones.addView(numero)
+                contenedorBotones.addView(btnMas)
+
+                //contenedor principal
+                contenedor.addView(nombre)
+                contenedor.addView(imageView)
+                contenedor.addView(contenedorBotones)
+
+                //contenedor  GridLayout
+                gridLayout.addView(contenedor)
             }
-
-            //contenedor de botones
-            contenedorBotones.addView(btnMenos)
-            contenedorBotones.addView(numero)
-            contenedorBotones.addView(btnMas)
-
-            //contenedor principal
-            contenedor.addView(nombre)
-            contenedor.addView(imageView)
-            contenedor.addView(contenedorBotones)
-
-            //contenedor  GridLayout
-            gridLayout.addView(contenedor)
-
         }
 
     }
@@ -302,7 +311,20 @@ class PantallaProductosActivity : AppCompatActivity() {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (!response.isSuccessful) {
                     Log.e("Login Error:", response.message())
+                    val intent = Intent(
+                        this@PantallaProductosActivity,
+                        PantallaPrincipalActivity::class.java
+
+                    )
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Error al iniciar sesión",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    startActivity(intent)
+                    finish()
                     return
+
                 }
                 response.body()?.let {
                     Log.i("Token:", it)

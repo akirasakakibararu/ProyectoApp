@@ -17,9 +17,12 @@
     <integer name="columnCount">1</integer>
     <integer name="rowCount">1</integer>
     <string name="nombre">Nombre</string>
+    <string name="usuarios">Usuarios</string>
+    <string name="contrasena">Inserte su Contraseña</string>
     <string name="nuevo">Nuevo Producto</string>
     <string name="eliminar">Eliminar</string>
-    <string name="desavilitar">Deshabilitar</string>
+    <string name="habilitar">Habilitado</string>
+    <string name="desavilitar">Deshabilitado</string>
     <string name="editar">Editar Producto</string>
     <string name="precio">Precio</string>
     <string name="stock">Cantidad</string>
