@@ -46,7 +46,7 @@
         android:layout_marginTop="150dp"
         android:layout_marginEnd="24dp"
         android:text="@string/nombre"
-        app:layout_constraintBottom_toTopOf="@+id/editDescripcion"
+        app:layout_constraintBottom_toTopOf="@+id/editPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.792"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.792"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editDescripcion" />
+        app:layout_constraintTop_toBottomOf="@+id/editPassword" />
 
     <EditText
         android:id="@+id/editCantidad2"
@@ -106,7 +106,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editPrecio2" />
 
     <EditText
-        android:id="@+id/editDescripcion"
+        android:id="@+id/editPassword"
         android:layout_width="317dp"
         android:layout_height="53dp"
         android:layout_marginStart="32dp"

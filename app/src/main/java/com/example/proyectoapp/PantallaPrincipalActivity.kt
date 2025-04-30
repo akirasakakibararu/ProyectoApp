@@ -33,7 +33,7 @@ import java.io.ByteArrayOutputStream
 
 class PantallaPrincipalActivity : AppCompatActivity() {
     private lateinit var users: List<Usuario>
-    private lateinit var listado: ListView
+
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
     private lateinit var gridLayout: GridLayout

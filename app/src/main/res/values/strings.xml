@@ -20,10 +20,23 @@
     <string name="usuarios">Usuarios</string>
     <string name="contrasena">Inserte su Contraseña</string>
     <string name="nuevo">Nuevo Producto</string>
+    <string name="nuevoUsuario">Nuevo Usuario</string>
+    <string name="anadirUsuario">Añadir Usuario</string>
+    <string name="anadirProducto">Añadir Producto</string>
+    <string name="eliminarUsuario">Eliminar Usuario</string>
+    <string name="eliminarProducto">Eliminar Producto</string>
+    <string name="nombreUsuario">Nombre de Usuario</string>
+    <string name="contrasenaUsuario">Contraseña</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="rol">Empleado</string>
+    <string name="nombreProducto">Nombre</string>
+
     <string name="eliminar">Eliminar</string>
     <string name="habilitar">Habilitado</string>
     <string name="desavilitar">Deshabilitado</string>
     <string name="editar">Editar Producto</string>
+    <string name="editUser">Editar Usuario</string>"
     <string name="precio">Precio</string>
     <string name="stock">Cantidad</string>
     <string name="stockMin">Cantidad Minima</string>
@@ -35,5 +48,9 @@
     <string name="cancelar">Cancelar</string>
     <string name="filtrar">Filtrar</string>
     <string name="opciones">Opciones</string>
+    <string name="perfiles">Perfiles</string>
+    <string name="albaranes">Alabaranes</string>
+    <string name="inventario">Inventario</string>
+
 
 </resources>

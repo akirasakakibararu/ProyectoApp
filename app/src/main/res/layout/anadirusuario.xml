@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/editPass"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/contrasenaUsuario"
+        app:layout_constraintBottom_toTopOf="@+id/editEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNombre" />
+
+    <EditText
+        android:id="@+id/editEmail"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/email"
+        app:layout_constraintBottom_toTopOf="@+id/checkRol"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPass" />
+
+    <CheckBox
+        android:id="@+id/checkRol"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/rol"
+        app:layout_constraintBottom_toTopOf="@+id/btnAnadir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editEmail" />
+
+    <ImageButton
+        android:id="@+id/botonFoto"
+        android:layout_width="333dp"
+        android:layout_height="344dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/buttonUser"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editPass"
+        app:layout_constraintHorizontal_bias="0.322"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48"
+        app:srcCompat="@drawable/masomenos" />
+
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/nuevoUsuario"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.065" />
+
+    <EditText
+        android:id="@+id/editNombre"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/nombre"
+        app:layout_constraintBottom_toTopOf="@+id/editPass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="212dp"
+        android:layout_height="78dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#EC407A"
+
+        android:text="@string/cancelar"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAnadir"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/botonFoto"
+        app:layout_constraintVertical_bias="0.623" />
+
+    <Button
+        android:id="@+id/btnAnadir"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#26C6DA"
+        android:text="@string/anadir"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@+id/checkRol" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

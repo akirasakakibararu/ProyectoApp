@@ -42,6 +42,8 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var gridLayout: GridLayout
     private lateinit var searchView: SearchView
     private lateinit var productosFiltrados: List<Productos>
+    private lateinit var perfiles: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.productoslista)
@@ -60,6 +62,12 @@ class PantallaProductosActivity : AppCompatActivity() {
 
         gridLayout = findViewById(R.id.idGridLayout)
         searchView = findViewById(R.id.searchViewProductos)
+        perfiles = findViewById(R.id.butPerfil)
+        perfiles.setOnClickListener {
+            val intent = Intent(this, PantallaPerfilesActivity::class.java)
+            startActivity(intent)
+        }
+
 
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -76,6 +84,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                 return true
             }
         })
+
 
     }
 

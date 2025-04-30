@@ -22,14 +22,11 @@
             android:name=".AnnadirProductoActivity"
             android:exported="false" />
         <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:label="@string/title_activity_fullscreen"
-            android:theme="@style/Theme.ProyectoApp.Fullscreen" />
-        <activity
             android:name=".PantallaProductosActivity"
             android:exported="false" />
+        <activity android:name=".PantallaPerfilesActivity"
+            android:exported="false" />
+
         <activity
             android:name=".PantallaPrincipalActivity"
             android:exported="false" />

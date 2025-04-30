@@ -1,6 +1,5 @@
 package com.example.proyectoapp.retrofit.adapter
 
-
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
@@ -18,55 +17,71 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
 import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.objetos.Usuario
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 
-class editarProductDialog(
-    var producto: Productos,
-    val onProductoEditado: (Productos) -> Unit,
-    val onProductoEliminado: (Int) -> Unit
+class EditarUserDialog(
+    var usuario: Usuario,
+    val onUsuarioEditado: (Usuario) -> Unit,
+    val onUsuarioEliminado: (Int) -> Unit
 ) : DialogFragment() {
 
     private lateinit var imageButtonLogo: ImageButton
-    private var imagenCambiada=false
+    private var imagenCambiada = false
     private val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.editarproducto, null)
-        val nombre = view.findViewById<EditText>(R.id.editNombre2)
-        val cantidad = view.findViewById<EditText>(R.id.editCantidad2)
-        val cantidadMin = view.findViewById<EditText>(R.id.editCantidadMin2)
-        val precio = view.findViewById<EditText>(R.id.editPrecio2)
-        val boton = view.findViewById<Button>(R.id.btnAnadir2)
-        val btnCancelar = view.findViewById<Button>(R.id.btnCancel2)
-        val descripcion = view.findViewById<EditText>(R.id.editPassword)
+        val view = inflater.inflate(R.layout.editarusuario, null)
+        val nombre = view.findViewById<EditText>(R.id.editNombreUser)
+        val password = view.findViewById<EditText>(R.id.editPassword)
+        val email = view.findViewById<EditText>(R.id.editEmail)
+
+        val boton = view.findViewById<Button>(R.id.btnEditar)
+        val btnCancelar = view.findViewById<Button>(R.id.btnCancelar)
+
         imageButtonLogo = view.findViewById(R.id.botonFoto2)
-        val btnEliminar = view.findViewById<Button>(R.id.btnCancel3)
-        val habilitado = view.findViewById<CheckBox>(R.id.checkBox)
-        habilitado.isChecked = producto.habilitado
+        val btnEliminar = view.findViewById<Button>(R.id.btnEliminar)
+
+        val rol = view.findViewById<CheckBox>(R.id.checkBoxRolEdit)
+        if (usuario.rol == "Administrador") {
+            rol.isChecked = true
+            rol.setText("Administrador")
+        } else {
+            rol.isChecked = false
+            rol.setText("Empleado")
+        }
+        rol.setOnCheckedChangeListener { _, isChecked ->
+            rol.setText(if (isChecked) "Administrador" else "Empleado")
+        }
+
+        val habilitado = view.findViewById<CheckBox>(R.id.checkBoxHabilitar)
+        if(usuario.habilitado){
+            habilitado.isChecked = true
+            habilitado.setText("Habilitado")
+        }else{
+            habilitado.isChecked = false
+            habilitado.setText("Deshabilitado")
+        }
 
         habilitado.setOnCheckedChangeListener { _, isChecked ->
-            producto.habilitado = isChecked
+            usuario.habilitado = isChecked
             habilitado.setText(if (isChecked) "Habilitado" else "Deshabilitado")
         }
-        nombre.inputType = InputType.TYPE_CLASS_TEXT
-        descripcion.inputType = InputType.TYPE_CLASS_TEXT
-        cantidad.inputType = InputType.TYPE_CLASS_NUMBER
-        cantidadMin.inputType = InputType.TYPE_CLASS_NUMBER
-        precio.inputType = InputType.TYPE_CLASS_NUMBER
 
-        nombre.setText(producto.nombre)
-        descripcion.setText(producto.descripcion)
-        cantidad.setText(producto.stockActual.toInt().toString())
-        cantidadMin.setText(producto.stockMinimo.toInt().toString())
-        precio.setText(producto.precioUnitario.toInt().toString())
 
-        cargarImagenDesdeString(producto.foto, imageButtonLogo)
+        nombre.setText(usuario.nombre)
+        password.setText(usuario.contrasena)
+        email.setText(usuario.email)
+
+
+        cargarImagenDesdeString(usuario.fotoPerfil, imageButtonLogo)
 
         val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
@@ -75,50 +90,55 @@ class editarProductDialog(
             val bitmap = (imageButtonLogo.drawable as BitmapDrawable).bitmap
             val fotoBase64 = bitmapToBase64(bitmap)
 
-            if(imagenCambiada){
-                val productoEditado = Productos(
-                    producto.idProducto,
-                    nombre.text.toString(),
-                    precio.text.toString().toDoubleOrNull() ?: 0.0,
-                    descripcion.text.toString(),
-                    fotoBase64,
-                    cantidad.text.toString().toIntOrNull() ?: 0,
-                    cantidadMin.text.toString().toIntOrNull() ?: 0,
-                    producto.habilitado
-                )
-                onProductoEditado(productoEditado)
-            }else{
-                val productoEditado = Productos(
-                    producto.idProducto,
-                    nombre.text.toString(),
-                    precio.text.toString().toDoubleOrNull() ?: 0.0,
-                    descripcion.text.toString(),
-                    producto.foto,
-                    cantidad.text.toString().toIntOrNull() ?: 0,
-                    cantidadMin.text.toString().toIntOrNull() ?: 0,
-                    producto.habilitado
-                )
-                onProductoEditado(productoEditado)
+            if (nombre.text.toString() == "" || password.text.toString() == "" || email.text.toString() == "") {
+                Toast.makeText(requireContext(), "Rellene todos los campos", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                if (imagenCambiada) {
+                    val usuarioEditado = Usuario(
+                        usuario.idUsuario,
+                        nombre.text.toString(),
+                        email.text.toString(),
+                        password.text.toString(),
+                        rol.text.toString(),
+                        fotoBase64,
+                        usuario.habilitado
+                    )
+                    onUsuarioEditado(usuarioEditado)
+                } else {
+                    val usuarioEditado = Usuario(
+                        usuario.idUsuario,
+                        nombre.text.toString(),
+                        email.text.toString(),
+                        password.text.toString(),
+                        rol.text.toString(),
+                        usuario.fotoPerfil,
+                        usuario.habilitado
+                    )
+                    onUsuarioEditado(usuarioEditado)
+                }
             }
+
 
 
             dialog.dismiss()
         }
 
         btnEliminar.setOnClickListener {
-            onProductoEliminado(producto.idProducto)
+            onUsuarioEliminado(usuario.idUsuario)
             dialog.dismiss()
         }
         btnCancelar.setOnClickListener {
             dialog.dismiss()
         }
         imageButtonLogo.setOnClickListener {
-            imagenCambiada=true
+            imagenCambiada = true
             takePicture()
         }
 
         return dialog
     }
+
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
@@ -131,6 +151,7 @@ class editarProductDialog(
             imageButtonLogo.setImageBitmap(imgBitmap)
         }
     }
+
     fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
@@ -138,18 +159,25 @@ class editarProductDialog(
         val base64 = Base64.encodeToString(byteArray, Base64.DEFAULT)
         return "data:image/png;base64,$base64"
     }
+
     fun identificarImagen(input: String): String {
         return when {
-            input.startsWith("data:image", ignoreCase = true) && input.contains("base64,") -> "base64"
+            input.startsWith(
+                "data:image",
+                ignoreCase = true
+            ) && input.contains("base64,") -> "base64"
+
             input.startsWith("http", ignoreCase = true) -> "url"
             else -> "desconocido"
         }
     }
+
     fun cargarImagenDesdeString(input: String, imageboton: ImageButton) {
         when (identificarImagen(input)) {
             "url" -> {
                 Picasso.get().load(input).into(imageboton)
             }
+
             "base64" -> {
                 try {
                     val base64Data = input.substringAfter("base64,")
@@ -158,15 +186,17 @@ class editarProductDialog(
                     imageboton.setImageBitmap(bitmap)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    imageboton.setImageResource(R.drawable.cafe)
+                    imageboton.setImageResource(R.drawable.perfil_estandar)
                 }
             }
+
             else -> {
                 // Imagen desconocida
-                imageboton.setImageResource(R.drawable.cafe)
+                imageboton.setImageResource(R.drawable.perfil_estandar)
             }
         }
     }
+
     @SuppressLint("QueryPermissionsNeeded")
     fun takePicture() {
 

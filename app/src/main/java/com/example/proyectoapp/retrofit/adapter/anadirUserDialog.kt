@@ -14,8 +14,8 @@ import android.text.InputType
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -23,56 +23,59 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
 import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.objetos.Usuario
 import java.io.ByteArrayOutputStream
 
-class anadirProductDialog(
-    val onProductoAñadido: (Productos) -> Unit
+class anadirUserDialog(
+    val onUserAñadido: (Usuario) -> Unit
 ) : DialogFragment() {
     private val REQUEST_IMAGE_CAPTURE = 1
     private lateinit var photoURI: Uri
     private lateinit var imageButtonLogo: ImageButton
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.anadirproducto, null)
+        val view = inflater.inflate(R.layout.anadirusuario, null)
 
         val nombre = view.findViewById<EditText>(R.id.editNombre)
-        val cantidad = view.findViewById<EditText>(R.id.editCantidad)
-        val cantidadMin = view.findViewById<EditText>(R.id.editCantidadMin)
-        val precio = view.findViewById<EditText>(R.id.editPrecio)
+        val pass = view.findViewById<EditText>(R.id.editPass)
+        val email = view.findViewById<EditText>(R.id.editEmail)
+
         val boton = view.findViewById<Button>(R.id.btnAnadir)
         val btnCancelar = view.findViewById<Button>(R.id.btnCancel)
         imageButtonLogo = view.findViewById(R.id.botonFoto)
-        nombre.inputType = InputType.TYPE_CLASS_TEXT
+        val habilitado = view.findViewById<CheckBox>(R.id.checkRol)
 
-        cantidad.inputType = InputType.TYPE_CLASS_NUMBER
-        cantidadMin.inputType = InputType.TYPE_CLASS_NUMBER
-        precio.inputType = InputType.TYPE_CLASS_NUMBER
+
         val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
             .create()
 
         boton.setOnClickListener {
             val bitmap =
-                (imageButtonLogo.drawable as BitmapDrawable).bitmap//Obtenemos el bitmap de la imagen
-            val fotoBase64 = bitmapToBase64(bitmap)//Convertimos el bitmap a Base64
-
-            if (nombre == null || cantidad == null || cantidadMin == null || precio == null) {
+                (imageButtonLogo.drawable as BitmapDrawable).bitmap
+            val fotoBase64 = bitmapToBase64(bitmap)
+            if (nombre == null || pass == null || email == null) {
                 Toast.makeText(requireContext(), "Rellene todos los campos", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                val producto = Productos(
+                val usuario = Usuario(
                     0,
                     nombre.text.toString(),
-                    precio.text.toString().toDoubleOrNull() ?: 0.0,
-                    "Descripcion", fotoBase64,
-                    cantidad.text.toString().toIntOrNull() ?: 0,
-                    cantidadMin.text.toString().toIntOrNull() ?: 0,
+                    email.text.toString(),
+                    pass.text.toString(),
+                    habilitado.text.toString(),
+                    fotoBase64,
                     true
                 )
-                onProductoAñadido(producto)
+                Log.i("Usuario", "Usuario añadido: " + usuario.toString())
+                onUserAñadido(usuario)
                 dialog.dismiss()
             }
 
+
+        }
+        habilitado.setOnCheckedChangeListener { _, isChecked ->
+            habilitado.setText(if (isChecked) "Administrador" else "Empleado")
         }
         btnCancelar.setOnClickListener {
             dialog.dismiss()
@@ -83,9 +86,8 @@ class anadirProductDialog(
         // Lista de todos los EditTexts a limpiar
         val editTexts = listOf(
             nombre,
-            cantidad,
-            cantidadMin,
-            precio
+            pass,
+            email
         )
         // Aplicar la función de limpieza a todos los EditTexts
         setOnFocusClearListener(editTexts)

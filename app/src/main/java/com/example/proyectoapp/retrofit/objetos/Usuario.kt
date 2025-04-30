@@ -7,7 +7,7 @@ data class Usuario(
     var contrasena: String,
     var rol: String,
     var fotoPerfil: String,
-    val habilitado: Boolean
+    var habilitado: Boolean
 ) {
 
 }
