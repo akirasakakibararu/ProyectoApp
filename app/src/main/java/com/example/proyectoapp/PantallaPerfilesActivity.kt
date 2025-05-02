@@ -130,105 +130,112 @@ class PantallaPerfilesActivity : AppCompatActivity() {
         }
         contAñadir.addView(btnAnadir)
         gridLayout.addView(contAñadir)
-        for (usuario in usuarios) {
 
-                val contenedor = LinearLayout(this).apply {
-                    orientation = LinearLayout.VERTICAL
-                    layoutParams = GridLayout.LayoutParams().apply {
-                        width = 400
-                        height = 500
-                        setMargins(16, 16, 16, 16)
-                    }
-                    gravity = Gravity.CENTER
-                    setPadding(16, 16, 16, 16)
-                    if (usuario.habilitado) {
-                        setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-                    } else {
-                        setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray))
-                    }
+        val usuariosOrdenados = usuarios.sortedWith(
+            compareByDescending<Usuario> {
+                it.habilitado }.thenBy
+            { it.nombre.lowercase() }
+        )
+        for (usuario in usuariosOrdenados) {
+
+            val contenedor = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = GridLayout.LayoutParams().apply {
+                    width = 400
+                    height = 500
+                    setMargins(16, 16, 16, 16)
                 }
-
-
-                val nombre = TextView(this).apply {
-                    text = usuario.nombre
-                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                    textSize = 18f
-                    gravity = Gravity.CENTER
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply { setMargins(5, 5, 5, 10) }
-                }
-
-
-                val userImage = ImageButton(this).apply {
-                    setImageResource(R.drawable.cafe)
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    adjustViewBounds = true
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        250
-                    ).apply { gravity = Gravity.CENTER }
+                gravity = Gravity.CENTER
+                setPadding(16, 16, 16, 16)
+                if (usuario.habilitado) {
                     setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-
+                } else {
+                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray))
                 }
-                val foto = usuario.fotoPerfil
-
-                try {
-                    if (!usuario.fotoPerfil.isNullOrEmpty()) {
-                        val bitmap = base64ToBitmap(usuario.fotoPerfil)
-                        if (bitmap != null) {
-                            userImage.setImageBitmap(bitmap)
-                            Log.e("UserAdapter", "imagencorrecta:")
-                        } else {
-                            userImage.setImageResource(R.drawable.perfil_estandar)
-                            Log.e("UserAdapter", "imagenIncorrecta:")
-                        }
-                    } else {
-                        userImage.setImageResource(R.drawable.perfil_estandar)
-                    }
-                } catch (e: Exception) {
-                    Log.e("UserAdapter", "Error al cargar imagen: ${e.message}")
-                    userImage.setImageResource(R.drawable.perfil_estandar)
-                }
-                userImage.setOnClickListener {
-                    Log.i("Producto", "Botón IMAGEN pulsado")
-
-                    val dialog = EditarUserDialog(usuario,
-                        onUsuarioEditado = { usuarioEditado ->
-                            editarUsuario(usuarioEditado)
-                        },
-                        onUsuarioEliminado = { idUsuario ->
-                            eliminarUsuario(idUsuario)
-                        }
-                    )
-                    dialog.show(supportFragmentManager, "insertarPassDialog")
-
-                }
-
-                val contenedorBotones = LinearLayout(this).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply { setMargins(8, 8, 8, 8) }
-                }
-
-
-                //contenedor de botones
-
-
-                //contenedor principal
-                contenedor.addView(nombre)
-                contenedor.addView(userImage)
-
-                //contenedor  GridLayout
-                gridLayout.addView(contenedor)
             }
 
 
+            val nombre = TextView(this).apply {
+                text = usuario.nombre
+                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                textSize = 18f
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(5, 5, 5, 10) }
+            }
+
+
+            val userImage = ImageButton(this).apply {
+                setImageResource(R.drawable.cafe)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                adjustViewBounds = true
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    250
+                ).apply { gravity = Gravity.CENTER }
+                setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+
+            }
+            val foto = usuario.fotoPerfil
+
+            try {
+                if (!usuario.fotoPerfil.isNullOrEmpty()) {
+                    val bitmap = base64ToBitmap(usuario.fotoPerfil)
+                    if (bitmap != null) {
+                        userImage.setImageBitmap(bitmap)
+                        Log.e("UserAdapter", "imagencorrecta:")
+                    } else {
+                        userImage.setImageResource(R.drawable.perfil_estandar)
+                        Log.e("UserAdapter", "imagenIncorrecta:")
+                    }
+                } else {
+                    userImage.setImageResource(R.drawable.perfil_estandar)
+                }
+            } catch (e: Exception) {
+                Log.e("UserAdapter", "Error al cargar imagen: ${e.message}")
+                userImage.setImageResource(R.drawable.perfil_estandar)
+            }
+            userImage.setOnClickListener {
+                Log.i("Producto", "Botón IMAGEN pulsado")
+
+                val dialog = EditarUserDialog(usuario,
+                    onUsuarioEditado = { usuarioEditado ->
+                        editarUsuario(usuarioEditado)
+                    },
+                    onUsuarioEliminado = { idUsuario ->
+                        eliminarUsuario(idUsuario)
+                    }
+                )
+                dialog.show(supportFragmentManager, "insertarPassDialog")
+
+            }
+
+            val contenedorBotones = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(8, 8, 8, 8) }
+            }
+
+
+            //contenedor de botones
+
+
+            //contenedor principal
+            contenedor.addView(nombre)
+            contenedor.addView(userImage)
+
+            //contenedor  GridLayout
+            gridLayout.addView(contenedor)
+        }
+
+
     }
+
     private fun editarUsuario(usuario: Usuario) {
         val token = "Bearer ${getAuthToken()}"
         val call = userApi.editarUsuario(token, usuario.idUsuario, usuario)
@@ -261,6 +268,7 @@ class PantallaPerfilesActivity : AppCompatActivity() {
             }
         })
     }
+
     fun eliminarUsuario(idUsuario: Int) {
         val token = "Bearer ${getAuthToken()}"
         val call = userApi.eliminarUsuario(token, idUsuario)
@@ -289,6 +297,7 @@ class PantallaPerfilesActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun base64ToBitmap(base64Str: String): Bitmap? {
         return try {
             val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)

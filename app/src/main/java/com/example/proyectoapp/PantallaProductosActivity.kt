@@ -28,8 +28,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.view.View
 import android.widget.SearchView
 import com.example.proyectoapp.retrofit.adapter.editarProductDialog
+import com.example.proyectoapp.retrofit.objetos.Usuario
 
 class PantallaProductosActivity : AppCompatActivity() {
 
@@ -43,6 +45,9 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
     private lateinit var productosFiltrados: List<Productos>
     private lateinit var perfiles: Button
+    private lateinit var albaranes: Button
+    private lateinit var inventario: Button
+    private lateinit var usuario: Usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,11 +68,31 @@ class PantallaProductosActivity : AppCompatActivity() {
         gridLayout = findViewById(R.id.idGridLayout)
         searchView = findViewById(R.id.searchViewProductos)
         perfiles = findViewById(R.id.butPerfil)
+        albaranes = findViewById(R.id.buttAlbaran)
+        inventario = findViewById(R.id.buttInventario)
+
+        albaranes.setOnClickListener {
+            val intent = Intent(this, PantallaAlbaranesActivity::class.java)
+            intent.putExtra("userId", usuario.idUsuario)
+            intent.putExtra("nombre", usuario.nombre)
+            intent.putExtra("email", usuario.email)
+            intent.putExtra("contrasena",contrasena)
+            intent.putExtra("rol", usuario.rol)
+            intent.putExtra("fotoPerfil", usuario.fotoPerfil)
+            intent.putExtra("habilitado", usuario.habilitado)
+            startActivity(intent)
+        }
+
         perfiles.setOnClickListener {
             val intent = Intent(this, PantallaPerfilesActivity::class.java)
             startActivity(intent)
         }
+        if (rol == "Empleado") {
+            perfiles.visibility = View.INVISIBLE
+            albaranes.visibility = View.INVISIBLE
+            inventario.visibility = View.INVISIBLE
 
+        }
 
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -152,9 +177,9 @@ class PantallaProductosActivity : AppCompatActivity() {
         contAñadir.addView(btnAnadir)
         gridLayout.addView(contAñadir)
         for (producto in productos) {
-            if(producto.habilitado==false){
-                Log.i("Producto", "Producto deshabilitado: "+producto.nombre)
-            }else {
+            if (producto.habilitado == false) {
+                Log.i("Producto", "Producto deshabilitado: " + producto.nombre)
+            } else {
 
 
                 val contenedor = LinearLayout(this).apply {
@@ -403,6 +428,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun disminuirStock(idProducto: Int) {
         val token = "Bearer ${getAuthToken()}"
         val call = productoApi.disminuirStock(token, idProducto)
@@ -410,7 +436,11 @@ class PantallaProductosActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@PantallaProductosActivity, "Stock disminuido", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Stock disminuido",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     getAllProductos()
                 } else {
                     Log.e("Disminuir Stock Error:", response.message())
@@ -422,6 +452,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun actualizarProductos() {
         val token = "Bearer ${getAuthToken()}"
         for (producto in productos) {

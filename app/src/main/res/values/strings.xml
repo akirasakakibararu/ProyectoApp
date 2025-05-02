@@ -51,6 +51,19 @@
     <string name="perfiles">Perfiles</string>
     <string name="albaranes">Alabaranes</string>
     <string name="inventario">Inventario</string>
+    <!-- Albaranes -->
+    <string name="nuevoAlbaran">Nuevo Albaran</string>
+    <string name="fecha">Fecha</string>
+    <string name="nif">NIF</string>
+    <string name="importe">Cantidad</string>
+    <string name="estado">Pagado</string>
+    <!-- Proveedores -->
+    <string name="nuevoProveedor">Nuevo Proveedor</string>
+    <string name="telefono">Telefono</string>
+    <string name="direccion">Dirección</string>
+    <string name="informe">Informe</string>
+    <!-- Usuarios -->
+
 
 
 </resources>

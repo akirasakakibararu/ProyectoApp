@@ -136,7 +136,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                                     this@PantallaPrincipalActivity,
                                     PantallaProductosActivity::class.java
                                 )
-                                intent.putExtra("userId", usuario.idUsuario)
+                                intent.putExtra("usuario", usuario.idUsuario)
                                 intent.putExtra("nombre", usuario.nombre)
                                 intent.putExtra("email", usuario.email)
                                 intent.putExtra("contrasena", password)

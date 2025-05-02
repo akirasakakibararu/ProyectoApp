@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/editCif"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/nif"
+        app:layout_constraintBottom_toTopOf="@+id/editCantidad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNombre" />
+
+    <EditText
+        android:id="@+id/editCantidad"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/cantidad"
+        app:layout_constraintBottom_toTopOf="@+id/checkEstado"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCif" />
+
+    <CheckBox
+        android:id="@+id/checkEstado"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/estado"
+        app:layout_constraintBottom_toTopOf="@+id/btnAnadir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCantidad" />
+
+    <ImageButton
+        android:id="@+id/txtFecha"
+        android:layout_width="250dp"
+        android:layout_height="220dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/buttonUser"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/calendarView"
+        app:layout_constraintEnd_toStartOf="@+id/editNombre"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTituloAlbaran"
+        app:srcCompat="@drawable/masomenos" />
+
+    <TextView
+        android:id="@+id/txtTituloAlbaran"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/nuevoAlbaran"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.065" />
+
+    <EditText
+        android:id="@+id/editNombre"
+        android:layout_width="317dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/nombre"
+        app:layout_constraintBottom_toTopOf="@+id/editCif"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="212dp"
+        android:layout_height="78dp"
+        android:backgroundTint="#EC407A"
+
+        android:text="@string/cancelar"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.249"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
+    <Button
+        android:id="@+id/btnAnadir"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#26C6DA"
+        android:text="@string/anadir"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@+id/checkEstado" />
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="250dp"
+        android:layout_height="220dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCancel"
+        app:layout_constraintEnd_toStartOf="@+id/editCantidad"
+        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtFecha" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
