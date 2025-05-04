@@ -22,7 +22,7 @@ interface UsuarioInterface {
         @Query("password") password: String
     ): Call<String>
 
-    @POST("auth/register")
+    @POST("usuarios")
     fun registerUser(
         @Header("Authorization") token: String,
         @Body usuario: Usuario,

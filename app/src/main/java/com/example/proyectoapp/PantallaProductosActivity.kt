@@ -73,19 +73,21 @@ class PantallaProductosActivity : AppCompatActivity() {
 
         albaranes.setOnClickListener {
             val intent = Intent(this, PantallaAlbaranesActivity::class.java)
-            intent.putExtra("userId", usuario.idUsuario)
-            intent.putExtra("nombre", usuario.nombre)
-            intent.putExtra("email", usuario.email)
+
+            intent.putExtra("userId", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("email", email)
             intent.putExtra("contrasena",contrasena)
-            intent.putExtra("rol", usuario.rol)
-            intent.putExtra("fotoPerfil", usuario.fotoPerfil)
-            intent.putExtra("habilitado", usuario.habilitado)
+            intent.putExtra("rol", rol)
+            intent.putExtra("foto", foto)
             startActivity(intent)
+            finish()
         }
 
         perfiles.setOnClickListener {
             val intent = Intent(this, PantallaPerfilesActivity::class.java)
             startActivity(intent)
+            finish()
         }
         if (rol == "Empleado") {
             perfiles.visibility = View.INVISIBLE

@@ -26,6 +26,10 @@
             android:exported="false" />
         <activity android:name=".PantallaPerfilesActivity"
             android:exported="false" />
+        <activity android:name=".PantallaInventarioActivity"
+            android:exported="false" />
+        <activity android:name=".PantallaAlbaranesActivity"
+            android:exported="false" />
 
         <activity
             android:name=".PantallaPrincipalActivity"

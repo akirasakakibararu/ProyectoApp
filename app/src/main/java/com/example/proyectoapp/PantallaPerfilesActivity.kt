@@ -38,7 +38,7 @@ class PantallaPerfilesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.usuariolista)
-        gridLayout = findViewById(R.id.idGridLayout)
+        gridLayout = findViewById(R.id.idGridLayoutUser)
         getAllUsers()
 
 

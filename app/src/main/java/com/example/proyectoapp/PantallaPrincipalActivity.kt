@@ -1,5 +1,6 @@
 package com.example.proyectoapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -37,10 +38,11 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
     private lateinit var gridLayout: GridLayout
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.usuariolista)
-        gridLayout = findViewById(R.id.idGridLayout)
+        gridLayout = findViewById(R.id.idGridLayoutUser)
         getAllUsers()
 
 

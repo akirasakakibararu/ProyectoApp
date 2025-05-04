@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
 import com.example.proyectoapp.retrofit.objetos.Albaran
-import com.example.proyectoapp.retrofit.objetos.Usuario
 import java.io.ByteArrayOutputStream
 
 class anadirAlbaranDialog(
@@ -64,8 +63,7 @@ class anadirAlbaranDialog(
                 val albaran = Albaran(
                     0,
                     fecha.date.toString(),
-                    nombre.text.toString(),
-                    habilitado.isChecked,
+                    habilitado.isChecked.toString(),
                     cif.text.toString(),
                     fotoBase64
                 )

@@ -61,7 +61,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
             Toast.makeText(this, "Informe", Toast.LENGTH_SHORT).show()
         }
 
-        //getAllAlbaranes()
+        getAllAlbaranes()
 
 
     }
@@ -81,6 +81,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Albaran>>, t: Throwable) {
+                Toast.makeText(this@PantallaAlbaranesActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })
@@ -112,14 +113,8 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
     private fun mostrarAlbaranes(albaranes: List<Albaran>) {
         gridLayout.removeAllViews()
-        gridLayout.columnCount = 5
-
-        val albaranesOrdenados = albaranes.sortedWith(
-            compareByDescending<Albaran> {
-                it.fecha
-            }.thenBy
-            { it.estado }
-        )
+        gridLayout.columnCount = 3
+        val albaranesOrdenados = albaranes.sortedByDescending { it.fechaAlbaran }
         for (albaran in albaranesOrdenados) {
 
             val contenedor = LinearLayout(this).apply {
@@ -131,7 +126,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
                 }
                 gravity = Gravity.CENTER
                 setPadding(16, 16, 16, 16)
-                if (albaran.estado) {
+                if (albaran.estado == "Pendiente") {
                     setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
                 } else {
                     setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray))
@@ -140,7 +135,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
 
             val nombre = TextView(this).apply {
-                text = albaran.fecha
+                text = albaran.fechaAlbaran.toString()
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 textSize = 18f
                 gravity = Gravity.CENTER
@@ -162,27 +157,27 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
 
             }
-            val foto = albaran.foto
+            val foto = albaran.fotoAlbaran
 
             try {
-                if (!albaran.foto.isNullOrEmpty()) {
-                    val bitmap = base64ToBitmap(albaran.foto)
+                if (!albaran.fotoAlbaran.isNullOrEmpty()) {
+                    val bitmap = base64ToBitmap(albaran.fotoAlbaran)
                     if (bitmap != null) {
                         userImage.setImageBitmap(bitmap)
-                        Log.e("UserAdapter", "imagencorrecta:")
+                            Log.e("Imagen", "imagencorrecta:")
                     } else {
                         userImage.setImageResource(R.drawable.perfil_estandar)
-                        Log.e("UserAdapter", "imagenIncorrecta:")
+                        Log.e("Imagen", "imagenIncorrecta:")
                     }
                 } else {
                     userImage.setImageResource(R.drawable.perfil_estandar)
                 }
             } catch (e: Exception) {
-                Log.e("UserAdapter", "Error al cargar imagen: ${e.message}")
+                Log.e("Imagen", "Error al cargar imagen: ${e.message}")
                 userImage.setImageResource(R.drawable.perfil_estandar)
             }
             userImage.setOnClickListener {
-                Log.i("Producto", "Botón IMAGEN pulsado")
+                Log.i("Imagen", "Botón IMAGEN pulsado")
 
             }
 
@@ -214,7 +209,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
     private fun base64ToBitmap(base64Str: String): Bitmap? {
         return try {
             val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
-            Log.e("UserAdapter", "convertido:")
+            Log.e("ImagenCheck", "convertido:")
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 
         } catch (e: Exception) {

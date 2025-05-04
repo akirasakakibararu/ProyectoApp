@@ -14,7 +14,6 @@
         android:orientation="vertical">
 
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -22,19 +21,21 @@
             android:padding="16dp"
             android:text="Productos"
             android:textSize="24sp" />
+
         <SearchView
             android:id="@+id/searchViewProductos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:queryHint="Buscar productos..."
+            android:layout_margin="16dp"
             android:iconifiedByDefault="false"
-            android:layout_margin="16dp" />
+            android:queryHint="Buscar productos..." />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_margin="16dp"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/butPerfil"
@@ -67,7 +68,7 @@
             android:padding="16dp"
             app:columnCount="4"
             app:rowCount="3"
-            tools:context=".PantallaProductosActivity" >
+            tools:context=".PantallaProductosActivity">
 
             <Button
                 android:id="@+id/button4"

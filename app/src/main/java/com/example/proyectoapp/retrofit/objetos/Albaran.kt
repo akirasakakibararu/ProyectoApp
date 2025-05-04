@@ -1,12 +1,12 @@
 package com.example.proyectoapp.retrofit.objetos
 
+
 data class Albaran(
-    val id: Int,
-    val fecha: String,
-    val nobre: String,
-    val estado: Boolean,
+    val idAlbaran: Int,
+    val fechaAlbaran: String,
+    val estado: String,
     val nif: String,
-    val foto: String
+    val fotoAlbaran: String
 ){
 
 }
