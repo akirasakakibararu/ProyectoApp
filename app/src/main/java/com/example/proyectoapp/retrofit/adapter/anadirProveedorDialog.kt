@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
-import com.example.proyectoapp.retrofit.objetos.Proveedores
+import com.example.proyectoapp.retrofit.pojos.Proveedores
 
 class anadirProveedorDialog (
     val onProveedorAñadido: (Proveedores) -> Unit

@@ -1,4 +1,4 @@
-package com.example.proyectoapp.retrofit.objetos
+package com.example.proyectoapp.retrofit.pojos
 
 data class Proveedores(
     val id: Int,

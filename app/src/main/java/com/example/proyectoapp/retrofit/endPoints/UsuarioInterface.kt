@@ -1,7 +1,6 @@
 package com.example.proyectoapp.retrofit.endPoints
 
-import com.example.proyectoapp.retrofit.objetos.Productos
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Usuario
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE

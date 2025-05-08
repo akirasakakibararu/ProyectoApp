@@ -1,13 +1,10 @@
 package com.example.proyectoapp
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import androidx.gridlayout.widget.GridLayout
 import android.widget.ImageView
@@ -21,7 +18,7 @@ import com.example.proyectoapp.retrofit.endPoints.ProductoInterface
 import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
-import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.pojos.Productos
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +28,7 @@ import android.util.Base64
 import android.view.View
 import android.widget.SearchView
 import com.example.proyectoapp.retrofit.adapter.editarProductDialog
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Usuario
 
 class PantallaProductosActivity : AppCompatActivity() {
 
@@ -65,7 +62,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
         loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
-        gridLayout = findViewById(R.id.idGridLayout)
+        gridLayout = findViewById(R.id.idProductoLayout)
         searchView = findViewById(R.id.searchViewProductos)
         perfiles = findViewById(R.id.butPerfil)
         albaranes = findViewById(R.id.buttAlbaran)
@@ -77,7 +74,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             intent.putExtra("userId", id)
             intent.putExtra("nombre", nombre)
             intent.putExtra("email", email)
-            intent.putExtra("contrasena",contrasena)
+            intent.putExtra("contrasena", contrasena)
             intent.putExtra("rol", rol)
             intent.putExtra("foto", foto)
             startActivity(intent)
@@ -150,6 +147,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                 width = 400
                 height = 500
                 setMargins(16, 16, 16, 16)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 3f)
             }
             setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
             gravity = Gravity.CENTER
@@ -189,23 +187,26 @@ class PantallaProductosActivity : AppCompatActivity() {
                     layoutParams = GridLayout.LayoutParams().apply {
                         width = 400
                         height = 500
+                        columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 3f)
                         setMargins(16, 16, 16, 16)
                     }
                     gravity = Gravity.CENTER
                     setPadding(16, 16, 16, 16)
                     setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+
                 }
 
 
                 val nombre = TextView(this).apply {
                     text = producto.nombre
-                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
                     textSize = 18f
                     gravity = Gravity.CENTER
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply { setMargins(5, 5, 5, 10) }
+                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
+
                 }
 
 
@@ -218,7 +219,6 @@ class PantallaProductosActivity : AppCompatActivity() {
                         250
                     ).apply { gravity = Gravity.CENTER }
                     setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-
                 }
                 cargarImagenDesdeString(producto.foto, imageView)
                 imageView.setOnClickListener {
@@ -243,6 +243,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply { setMargins(8, 8, 8, 8) }
+                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
                 }
 
                 val numero = TextView(this).apply {
@@ -270,37 +271,15 @@ class PantallaProductosActivity : AppCompatActivity() {
                         Log.i("Producto", "Disminuir producto")
                         val numeroActual = numero.text.toString().toIntOrNull() ?: 0
                         if (numeroActual <= 0) {
-                            numero.setTextColor(
-                                ContextCompat.getColor(
-                                    context,
-                                    android.R.color.holo_red_light
-                                )
-                            )
                             Toast.makeText(
                                 this@PantallaProductosActivity,
                                 "No hay mas Stock de este producto",
                                 Toast.LENGTH_SHORT
                             ).show()
-                        } else if (numeroActual <= producto.stockMinimo) {
-                            numero.setText((numeroActual - 1).toString())
-                            producto.stockActual = numero.getText().toString().toInt()
-                            numero.setTextColor(
-                                ContextCompat.getColor(
-                                    context,
-                                    android.R.color.holo_red_light
-                                )
-                            )
-                            Toast.makeText(
-                                this@PantallaProductosActivity,
-                                "Este producto se encuentra en el limite minimo",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            disminuirStock(producto.idProducto)
-                        } else if (numeroActual > 0) {
+                        } else {
                             numero.setText((numeroActual - 1).toString())
                             producto.stockActual = numero.getText().toString().toInt()
                             disminuirStock(producto.idProducto)
-
                         }
                     }
                 }
@@ -323,7 +302,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                         aumentarStock(producto.idProducto)
                     }
                 }
-
+                aplicarEstiloSegunStock(producto, contenedor, numero, btnMenos,nombre)
                 //contenedor de botones
                 contenedorBotones.addView(btnMenos)
                 contenedorBotones.addView(numero)
@@ -340,7 +319,28 @@ class PantallaProductosActivity : AppCompatActivity() {
         }
 
     }
-
+    fun aplicarEstiloSegunStock(
+        producto: Productos,
+        contenedor: LinearLayout,
+        numero: TextView,
+        btnMenos: Button,
+        nombre: TextView
+    ) {
+        if (producto.stockActual <= 0) {
+            btnMenos.isEnabled = false
+            nombre.setTextColor(ContextCompat.getColor(this, R.color.white))
+            btnMenos.setBackgroundColor(ContextCompat.getColor(this, R.color.grisazul))
+            contenedor.setBackgroundColor(ContextCompat.getColor(this, R.color.rojo))
+        } else if (producto.stockActual <= producto.stockMinimo) {
+            btnMenos.isEnabled = true
+            numero.setTextColor(ContextCompat.getColor(this, R.color.rojo))
+            btnMenos.setBackgroundColor(ContextCompat.getColor(this, R.color.rojo))
+            contenedor.setBackgroundColor(ContextCompat.getColor(this, R.color.amarillo))
+        } else {
+            numero.setTextColor(ContextCompat.getColor(this, R.color.black))
+            contenedor.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+        }
+    }
     private fun loginUser(username: String, password: String) {
         val call = userApi.loginUser(username, password)
         call.enqueue(object : Callback<String> {
@@ -354,8 +354,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                     )
                     Toast.makeText(
                         this@PantallaProductosActivity,
-                        "Error al iniciar sesión",
-                        Toast.LENGTH_SHORT
+                        "Contraseña incorrecta",
+                        Toast.LENGTH_LONG
                     ).show()
                     startActivity(intent)
                     finish()
@@ -385,11 +385,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@PantallaProductosActivity,
-                        "Stock aumentado",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.i("Stock aumentado", "Stock aumentado con éxito")
                     getAllProductos()
                 } else {
                     Log.e("Aumentar Stock Error:", response.message())
@@ -409,11 +405,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@PantallaProductosActivity,
-                        "Producto eliminado",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.i("Producto eliminado", "Producto eliminado con éxito")
                     getAllProductos()
                 } else {
                     Log.e("Eliminar Error:", response.message())
@@ -438,11 +430,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@PantallaProductosActivity,
-                        "Stock disminuido",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                   Log.i("Stock disminuido", "Stock disminuido con éxito")
                     getAllProductos()
                 } else {
                     Log.e("Disminuir Stock Error:", response.message())

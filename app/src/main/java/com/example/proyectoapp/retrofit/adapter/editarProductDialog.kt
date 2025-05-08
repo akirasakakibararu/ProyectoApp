@@ -21,7 +21,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
-import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.pojos.Productos
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 

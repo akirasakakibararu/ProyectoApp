@@ -1,4 +1,4 @@
-package com.example.proyectoapp.retrofit.objetos
+package com.example.proyectoapp.retrofit.pojos
 
 import java.util.Date
 

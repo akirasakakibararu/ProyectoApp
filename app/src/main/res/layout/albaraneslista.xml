@@ -51,14 +51,13 @@
                 android:text="@string/informe" />
         </LinearLayout>
 
-
         <androidx.gridlayout.widget.GridLayout
-            android:id="@+id/idGridLayout"
+            android:id="@+id/idAlbaranesGridLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="16dp"
-            tools:context=".PantallaAlbaranesActivity">
+            android:padding="16dp">
+
         </androidx.gridlayout.widget.GridLayout>
 
 

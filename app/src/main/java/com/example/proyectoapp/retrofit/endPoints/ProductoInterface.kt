@@ -1,6 +1,6 @@
 package com.example.proyectoapp.retrofit.endPoints
 
-import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.pojos.Productos
 import retrofit2.Call
 import retrofit2.http.*
 

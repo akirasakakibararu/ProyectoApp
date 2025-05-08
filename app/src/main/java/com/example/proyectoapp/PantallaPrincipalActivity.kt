@@ -11,7 +11,6 @@ import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +21,11 @@ import androidx.gridlayout.widget.GridLayout
 import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
 
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Usuario
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.Bitmap
-import com.example.proyectoapp.retrofit.adapter.editarProductDialog
 import com.example.proyectoapp.retrofit.adapter.insertarPassDialog
 import java.io.ByteArrayOutputStream
 

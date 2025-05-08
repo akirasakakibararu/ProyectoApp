@@ -23,7 +23,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
-import com.example.proyectoapp.retrofit.objetos.Albaran
+import com.example.proyectoapp.retrofit.pojos.Albaran
 import java.io.ByteArrayOutputStream
 
 class anadirAlbaranDialog(
@@ -63,7 +63,7 @@ class anadirAlbaranDialog(
                 val albaran = Albaran(
                     0,
                     fecha.date.toString(),
-                    habilitado.isChecked.toString(),
+                    habilitado.text.toString(),
                     cif.text.toString(),
                     fotoBase64
                 )
@@ -76,7 +76,7 @@ class anadirAlbaranDialog(
 
         }
         habilitado.setOnCheckedChangeListener { _, isChecked ->
-            habilitado.setText(if (isChecked) "Pagado" else "Falta pagar")
+            habilitado.setText(if (isChecked) "Pagado" else "Pendiente")
         }
         btnCancelar.setOnClickListener {
             dialog.dismiss()

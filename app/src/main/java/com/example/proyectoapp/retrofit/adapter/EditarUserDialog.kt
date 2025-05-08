@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.InputType
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,8 +20,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
-import com.example.proyectoapp.retrofit.objetos.Productos
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Usuario
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 

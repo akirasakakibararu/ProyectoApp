@@ -1,6 +1,5 @@
 package com.example.proyectoapp
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -16,14 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
 import com.example.proyectoapp.retrofit.adapter.EditarUserDialog
-import com.example.proyectoapp.retrofit.adapter.anadirProductDialog
 import com.example.proyectoapp.retrofit.adapter.anadirUserDialog
-import com.example.proyectoapp.retrofit.adapter.insertarPassDialog
 import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
-import com.example.proyectoapp.retrofit.objetos.Productos
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Usuario
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -14,7 +14,6 @@ import android.text.InputType
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -22,7 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoapp.R
-import com.example.proyectoapp.retrofit.objetos.Productos
+import com.example.proyectoapp.retrofit.pojos.Productos
 import java.io.ByteArrayOutputStream
 
 class anadirProductDialog(

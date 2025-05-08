@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.Gravity
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -15,15 +16,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
-import com.example.proyectoapp.retrofit.adapter.EditarUserDialog
 import com.example.proyectoapp.retrofit.adapter.anadirAlbaranDialog
 import com.example.proyectoapp.retrofit.adapter.anadirUserDialog
 import com.example.proyectoapp.retrofit.endPoints.AlbaranInterface
-import com.example.proyectoapp.retrofit.endPoints.UsuarioInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
-import com.example.proyectoapp.retrofit.objetos.Albaran
-import com.example.proyectoapp.retrofit.objetos.Usuario
+import com.example.proyectoapp.retrofit.pojos.Albaran
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,12 +34,14 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
     private lateinit var botonAñadir: Button
     private lateinit var botonInforme: Button
     private lateinit var botonEditar: Button
-
     private lateinit var gridLayout: GridLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.albaraneslista)
-        gridLayout = findViewById(R.id.idGridLayout)
+
+        gridLayout = findViewById(R.id.idAlbaranesGridLayout)
+
         val datos = this.intent.extras
         val nombre = datos?.getString("nombre")
         val email = datos?.getString("email")
@@ -48,6 +49,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         val rol = datos?.getString("rol")
         val foto = datos?.getString("foto")
         val id = datos?.getInt("userId")
+
         botonAñadir=findViewById(R.id.butNew)
         botonInforme=findViewById(R.id.butInforme)
 
@@ -64,6 +66,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         getAllAlbaranes()
 
 
+
     }
 
     private fun getAllAlbaranes() {
@@ -76,7 +79,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
                     return
                 }
                 albaranes = response.body() ?: emptyList()
-                albaranes.forEach { Log.i("Usuarios:", it.toString()) }
+                albaranes.forEach { Log.i("Albaranes:", it.toString()) }
                 mostrarAlbaranes(albaranes)
             }
 
@@ -113,31 +116,27 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
     private fun mostrarAlbaranes(albaranes: List<Albaran>) {
         gridLayout.removeAllViews()
-        gridLayout.columnCount = 3
-        val albaranesOrdenados = albaranes.sortedByDescending { it.fechaAlbaran }
-        for (albaran in albaranesOrdenados) {
+        gridLayout.columnCount =3
 
+        for (albaran in albaranes) {
             val contenedor = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 layoutParams = GridLayout.LayoutParams().apply {
-                    width = 400
+                    width = 0
                     height = 500
+                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 3f)
                     setMargins(16, 16, 16, 16)
                 }
                 gravity = Gravity.CENTER
                 setPadding(16, 16, 16, 16)
-                if (albaran.estado == "Pendiente") {
-                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-                } else {
-                    setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray))
-                }
+                setBackgroundColor(ContextCompat.getColor(context, R.color.white))
             }
 
 
             val nombre = TextView(this).apply {
-                text = albaran.fechaAlbaran.toString()
+                text = albaran.estado
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                textSize = 18f
+                textSize = 25f
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -146,64 +145,46 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
             }
 
 
-            val userImage = ImageButton(this).apply {
+            val imagen = ImageButton(this).apply {
                 setImageResource(R.drawable.cafe)
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 adjustViewBounds = true
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    250
+                    400
                 ).apply { gravity = Gravity.CENTER }
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
 
             }
-            val foto = albaran.fotoAlbaran
 
             try {
                 if (!albaran.fotoAlbaran.isNullOrEmpty()) {
                     val bitmap = base64ToBitmap(albaran.fotoAlbaran)
                     if (bitmap != null) {
-                        userImage.setImageBitmap(bitmap)
-                            Log.e("Imagen", "imagencorrecta:")
+                        imagen.setImageBitmap(bitmap)
+                        Log.e("UserAdapter", "imagencorrecta:")
                     } else {
-                        userImage.setImageResource(R.drawable.perfil_estandar)
-                        Log.e("Imagen", "imagenIncorrecta:")
+                        imagen.setImageResource(R.drawable.perfil_estandar)
+                        Log.e("UserAdapter", "imagenIncorrecta:")
                     }
                 } else {
-                    userImage.setImageResource(R.drawable.perfil_estandar)
+                    imagen.setImageResource(R.drawable.perfil_estandar)
                 }
             } catch (e: Exception) {
-                Log.e("Imagen", "Error al cargar imagen: ${e.message}")
-                userImage.setImageResource(R.drawable.perfil_estandar)
+                Log.e("UserAdapter", "Error al cargar imagen: ${e.message}")
+                imagen.setImageResource(R.drawable.perfil_estandar)
             }
-            userImage.setOnClickListener {
+
+            imagen.setOnClickListener {
                 Log.i("Imagen", "Botón IMAGEN pulsado")
-
             }
 
-            val contenedorBotones = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(8, 8, 8, 8) }
-            }
-
-
-            //contenedor de botones
-
-
-            //contenedor principal
             contenedor.addView(nombre)
-            contenedor.addView(userImage)
-
-            //contenedor  GridLayout
+            contenedor.addView(imagen)
             gridLayout.addView(contenedor)
         }
-
-
     }
+
 
 
     private fun base64ToBitmap(base64Str: String): Bitmap? {
@@ -224,4 +205,6 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
+
+
 }

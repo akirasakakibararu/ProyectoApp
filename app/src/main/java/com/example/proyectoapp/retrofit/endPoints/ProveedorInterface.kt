@@ -1,7 +1,6 @@
 package com.example.proyectoapp.retrofit.endPoints
 
-import com.example.proyectoapp.retrofit.objetos.Albaran
-import com.example.proyectoapp.retrofit.objetos.Proveedores
+import com.example.proyectoapp.retrofit.pojos.Proveedores
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
