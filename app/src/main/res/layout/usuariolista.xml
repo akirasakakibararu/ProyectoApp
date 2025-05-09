@@ -13,17 +13,33 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/usuarios"
-            android:textSize="24sp" />
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnVolver"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/holo_blue_light"
+                android:scaleType="fitCenter"
+                android:contentDescription="TODO"
+                app:srcCompat="@drawable/volber" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/usuarios"
+                android:textSize="24sp" />
+        </LinearLayout>
 
 
-        <androidx.gridlayout.widget.GridLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.gridlayout.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/idGridLayoutUser"

@@ -15,6 +15,7 @@ import com.example.proyectoapp.retrofit.pojos.Proveedores
 
 class anadirProveedorDialog (
     val onProveedorAñadido: (Proveedores) -> Unit
+
 ) : DialogFragment() {
     private val REQUEST_IMAGE_CAPTURE = 1
     private lateinit var photoURI: Uri

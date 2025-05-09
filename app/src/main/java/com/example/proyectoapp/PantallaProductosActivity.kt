@@ -44,6 +44,7 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var perfiles: Button
     private lateinit var albaranes: Button
     private lateinit var inventario: Button
+    private lateinit var btnVolver: ImageButton
     private lateinit var usuario: Usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,13 @@ class PantallaProductosActivity : AppCompatActivity() {
         perfiles = findViewById(R.id.butPerfil)
         albaranes = findViewById(R.id.buttAlbaran)
         inventario = findViewById(R.id.buttInventario)
+        btnVolver = findViewById(R.id.btnVolver)
 
+        btnVolver.setOnClickListener {
+            val intent = Intent(this, PantallaPrincipalActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         albaranes.setOnClickListener {
             val intent = Intent(this, PantallaAlbaranesActivity::class.java)
 
@@ -83,6 +90,11 @@ class PantallaProductosActivity : AppCompatActivity() {
 
         perfiles.setOnClickListener {
             val intent = Intent(this, PantallaPerfilesActivity::class.java)
+            intent.putExtra("userId", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("email", email)
+            intent.putExtra("contrasena", contrasena)
+            intent.putExtra("rol", rol)
             startActivity(intent)
             finish()
         }
@@ -96,22 +108,30 @@ class PantallaProductosActivity : AppCompatActivity() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                filtrarProductos(query)
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val texto = newText?.lowercase() ?: ""
-                productosFiltrados = productos.filter {
-                    it.nombre.lowercase().contains(texto)
-                }
-                mostrarProductos(productosFiltrados)
+                filtrarProductos(newText)
                 return true
             }
         })
-
-
     }
 
+    private fun filtrarProductos(query: String?) {
+        val texto = query?.trim()?.lowercase().orEmpty()
+        productosFiltrados = productos.filter {
+            it.nombre.contains(texto, ignoreCase = true)
+        }
+        Log.i("Productos filtrados:", productosFiltrados.toString())
+
+        mostrarProductos(productosFiltrados)
+    }
+    private fun getAuthToken(): String? {
+        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        return sharedPreferences.getString("auth_token", null)
+    }
 
     private fun getAllProductos() {
         val token = "Bearer ${getAuthToken()}"
@@ -140,7 +160,14 @@ class PantallaProductosActivity : AppCompatActivity() {
 
     private fun mostrarProductos(productos: List<Productos>) {
         gridLayout.removeAllViews()
-        gridLayout.columnCount = 5
+        if(productos.count()<=2){
+            gridLayout.columnCount = 1
+        }else if(productos.count()==3){
+            gridLayout.columnCount = 3
+        }else{
+            gridLayout.columnCount = 5
+        }
+
         val contAñadir = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = GridLayout.LayoutParams().apply {

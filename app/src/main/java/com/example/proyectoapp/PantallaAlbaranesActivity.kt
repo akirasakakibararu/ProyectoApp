@@ -17,11 +17,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
 import com.example.proyectoapp.retrofit.adapter.anadirAlbaranDialog
+import com.example.proyectoapp.retrofit.adapter.anadirProveedorDialog
 import com.example.proyectoapp.retrofit.adapter.anadirUserDialog
 import com.example.proyectoapp.retrofit.endPoints.AlbaranInterface
+import com.example.proyectoapp.retrofit.endPoints.ProveedorInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface
 import com.example.proyectoapp.retrofit.instances.UserInterface.getAuthToken
 import com.example.proyectoapp.retrofit.pojos.Albaran
+import com.example.proyectoapp.retrofit.pojos.Proveedores
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,10 +33,15 @@ import java.io.ByteArrayOutputStream
 
 class PantallaAlbaranesActivity : AppCompatActivity() {
     private lateinit var albaranes: List<Albaran>
-    private val albaranApi: AlbaranInterface = UserInterface.retrofit.create(AlbaranInterface::class.java)
+    private lateinit var proveedores: List<Proveedores>
+    private val albaranApi: AlbaranInterface =
+        UserInterface.retrofit.create(AlbaranInterface::class.java)
+    private val proveedorApi: ProveedorInterface =
+        UserInterface.retrofit.create(ProveedorInterface::class.java)
     private lateinit var botonAñadir: Button
+    private lateinit var botonProveedor: Button
     private lateinit var botonInforme: Button
-    private lateinit var botonEditar: Button
+    private lateinit var btnVolver: ImageButton
     private lateinit var gridLayout: GridLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,21 +58,39 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         val foto = datos?.getString("foto")
         val id = datos?.getInt("userId")
 
-        botonAñadir=findViewById(R.id.butNew)
-        botonInforme=findViewById(R.id.butInforme)
-
-        botonAñadir.setOnClickListener{
+        botonAñadir = findViewById(R.id.butNew)
+        botonInforme = findViewById(R.id.butInforme)
+        btnVolver = findViewById(R.id.btnVolver)
+        botonProveedor = findViewById(R.id.butProveedor)
+        botonProveedor.setOnClickListener {
+            val dialog = anadirProveedorDialog { nuevoProveedor ->
+                anadirProveedor(nuevoProveedor)
+            }
+            dialog.show(supportFragmentManager, "AñadirUsuarioDialog")
+        }
+        btnVolver.setOnClickListener {
+            val intent = android.content.Intent(this, PantallaProductosActivity::class.java)
+            intent.putExtra("userId", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("email", email)
+            intent.putExtra("contrasena", contrasena)
+            intent.putExtra("rol", rol)
+            intent.putExtra("foto", foto)
+            startActivity(intent)
+            finish()
+        }
+        botonAñadir.setOnClickListener {
             val dialog = anadirAlbaranDialog { nuevoAlbaran ->
                 anadirAlbaran(nuevoAlbaran)
             }
             dialog.show(supportFragmentManager, "AñadirUsuarioDialog")
         }
-        botonInforme.setOnClickListener{
+        botonInforme.setOnClickListener {
             Toast.makeText(this, "Informe", Toast.LENGTH_SHORT).show()
         }
 
         getAllAlbaranes()
-
+        getAllProveedores()
 
 
     }
@@ -84,7 +110,27 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Albaran>>, t: Throwable) {
-                Toast.makeText(this@PantallaAlbaranesActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    private fun getAllProveedores() {
+        val token = "Bearer ${getAuthToken()}"
+        val call = proveedorApi.getAllProveedores(token)
+        call.enqueue(object : Callback<List<Proveedores>> {
+            override fun onResponse(call: Call<List<Proveedores>>, response: Response<List<Proveedores>>) {
+                if (!response.isSuccessful) {
+                    Log.e("Response err:", response.message())
+                    return
+                }
+                proveedores = response.body() ?: emptyList()
+                proveedores.forEach { Log.i("Albaranes:", it.toString()) }
+
+            }
+
+            override fun onFailure(call: Call<List<Proveedores>>, t: Throwable) {
+
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })
@@ -114,9 +160,38 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         })
     }
 
+    private fun anadirProveedor(proveedor: Proveedores) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = proveedorApi.anadirProveedor(token, proveedor)
+
+        call.enqueue(object : Callback<Proveedores> {
+            override fun onResponse(call: Call<Proveedores>, response: Response<Proveedores>) {
+                if (!response.isSuccessful) {
+                    Log.e("Proveedores Error:", response.message())
+
+                    return
+                }
+                response.body()?.let {
+                    Log.i("Proveedore añadido:", it.toString())
+
+                }
+            }
+
+            override fun onFailure(call: Call<Proveedores>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
     private fun mostrarAlbaranes(albaranes: List<Albaran>) {
         gridLayout.removeAllViews()
-        gridLayout.columnCount =3
+        if (albaranes.count() <= 2) {
+            gridLayout.columnCount = 1
+        } else if (albaranes.count() <= 3) {
+            gridLayout.columnCount = 3
+        } else if (albaranes.count() >= 4) {
+            gridLayout.columnCount = 3
+        }
 
         for (albaran in albaranes) {
             val contenedor = LinearLayout(this).apply {
@@ -184,7 +259,6 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
             gridLayout.addView(contenedor)
         }
     }
-
 
 
     private fun base64ToBitmap(base64Str: String): Bitmap? {

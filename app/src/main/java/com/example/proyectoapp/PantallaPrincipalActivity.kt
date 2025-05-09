@@ -26,6 +26,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.Bitmap
+import android.view.View
+import androidx.core.view.isInvisible
 import com.example.proyectoapp.retrofit.adapter.insertarPassDialog
 import java.io.ByteArrayOutputStream
 
@@ -36,12 +38,16 @@ class PantallaPrincipalActivity : AppCompatActivity() {
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
     private lateinit var gridLayout: GridLayout
+    private lateinit var btnVolver: ImageButton
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.usuariolista)
         gridLayout = findViewById(R.id.idGridLayoutUser)
         getAllUsers()
+        btnVolver = findViewById(R.id.btnVolver)
+        btnVolver.isInvisible = true
 
 
     }

@@ -28,9 +28,16 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:orientation="horizontal">
-
+            <ImageButton
+                android:id="@+id/btnVolver"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="TODO"
+                android:background="@android:color/holo_blue_light"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/volber" />
             <Button
-                android:id="@+id/butBackup"
+                android:id="@+id/butProveedor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

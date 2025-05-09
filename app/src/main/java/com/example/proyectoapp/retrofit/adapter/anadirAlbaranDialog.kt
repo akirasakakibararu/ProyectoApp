@@ -113,7 +113,7 @@ class anadirAlbaranDialog(
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         val base64 = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        return "data:image/png;base64,$base64"
+        return base64
     }
 
     fun base64ToBitmap(base64Str: String): Bitmap {//Función para convertir un Base64 a bitmap

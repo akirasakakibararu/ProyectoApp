@@ -22,13 +22,30 @@
             android:text="Productos"
             android:textSize="24sp" />
 
-        <SearchView
-            android:id="@+id/searchViewProductos"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="Buscar productos..." />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnVolver"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/holo_orange_light"
+                android:contentDescription="TODO"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/volber" />
+
+            <SearchView
+                android:id="@+id/searchViewProductos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:iconifiedByDefault="false"
+                android:queryHint="Buscar productos..." />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:text="Button" />
         </androidx.gridlayout.widget.GridLayout>
+
 
     </LinearLayout>
 </ScrollView>

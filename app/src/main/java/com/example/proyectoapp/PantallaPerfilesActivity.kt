@@ -30,13 +30,32 @@ class PantallaPerfilesActivity : AppCompatActivity() {
 
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
+
     private lateinit var gridLayout: GridLayout
+    private lateinit var btnVolver: ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.usuariolista)
         gridLayout = findViewById(R.id.idGridLayoutUser)
         getAllUsers()
-
+        btnVolver = findViewById(R.id.btnVolver)
+        val datos = this.intent.extras
+        val nombre = datos?.getString("nombre")
+        val email = datos?.getString("email")
+        val contrasena = datos?.getString("contrasena")
+        val rol = datos?.getString("rol")
+        val foto = datos?.getString("foto")
+        val id = datos?.getInt("userId")
+        btnVolver.setOnClickListener {
+            val intent = android.content.Intent(this, PantallaProductosActivity::class.java)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("email", email)
+            intent.putExtra("contrasena", contrasena)
+            intent.putExtra("rol", rol)
+            startActivity(intent)
+            finish()
+        }
 
     }
 
@@ -93,7 +112,13 @@ class PantallaPerfilesActivity : AppCompatActivity() {
 
     private fun mostrarUsuarios(usuarios: List<Usuario>) {
         gridLayout.removeAllViews()
-        gridLayout.columnCount = 5
+        if(usuarios.count()<=2){
+            gridLayout.columnCount = 1
+        }else if(usuarios.count()==3){
+            gridLayout.columnCount = 3
+        }else{
+            gridLayout.columnCount = 5
+        }
         val contAñadir = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = GridLayout.LayoutParams().apply {
