@@ -25,7 +25,7 @@ class anadirProveedorDialog (
         val view = inflater.inflate(R.layout.anadirproveedores, null)
 
         val nombre = view.findViewById<EditText>(R.id.editNombre)
-        val pass = view.findViewById<EditText>(R.id.editNif)
+        val nif = view.findViewById<EditText>(R.id.editNif)
         val email = view.findViewById<EditText>(R.id.editEmail)
         val direccion = view.findViewById<EditText>(R.id.editDireccion)
         val telefono = view.findViewById<EditText>(R.id.editTelefono)
@@ -41,17 +41,19 @@ class anadirProveedorDialog (
 
         boton.setOnClickListener {
 
-            if (nombre == null || pass == null || email == null) {
+            if (nombre == null || nif == null || email == null) {
                 Toast.makeText(requireContext(), "Rellene todos los campos", Toast.LENGTH_SHORT)
                     .show()
             } else {
                 val proveedor = Proveedores(
                     0,
                     nombre.text.toString(),
-                    email.text.toString(),
-                    pass.text.toString(),
+                    telefono.text.toString(),
                     direccion.text.toString(),
-                    telefono.text.toString()
+                    email.text.toString(),
+                    nif.text.toString()
+
+
                 )
                 Log.i("Proveedor", "Proveedor añadido: " + proveedor.toString())
                 onProveedorAñadido(proveedor)
@@ -66,7 +68,7 @@ class anadirProveedorDialog (
         // Lista de todos los EditTexts a limpiar
         val editTexts = listOf(
             nombre,
-            pass,
+            nif,
             email,
             direccion,
             telefono
