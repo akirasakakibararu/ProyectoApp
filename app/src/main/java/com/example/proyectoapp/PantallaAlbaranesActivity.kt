@@ -30,6 +30,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
 
 class PantallaAlbaranesActivity : AppCompatActivity() {
     private lateinit var albaranes: List<Albaran>
@@ -90,7 +91,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         }
 
         getAllAlbaranes()
-        getAllProveedores()
+        //getAllProveedores()
 
 
     }
@@ -209,7 +210,9 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
 
             val nombre = TextView(this).apply {
-                text = albaran.estado
+                val localDate = LocalDate.parse(albaran.fechaAlbaran)
+                text = localDate.toString()
+
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 textSize = 25f
                 gravity = Gravity.CENTER

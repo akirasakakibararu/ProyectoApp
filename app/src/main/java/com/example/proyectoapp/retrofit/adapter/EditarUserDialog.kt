@@ -75,7 +75,6 @@ class EditarUserDialog(
 
 
         nombre.setText(usuario.nombre)
-        password.setText(usuario.contrasena)
         email.setText(usuario.email)
 
 
