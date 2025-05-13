@@ -210,8 +210,20 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
 
             val nombre = TextView(this).apply {
-                val localDate = LocalDate.parse(albaran.fechaAlbaran)
-                text = localDate.toString()
+                val fecha = LocalDate.parse(albaran.fechaAlbaran.substring(0, 10))
+                text = fecha.toString()
+
+                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                textSize = 25f
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(5, 5, 5, 10) }
+            }
+            val estado = TextView(this).apply {
+
+                text = albaran.estado
 
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 textSize = 25f
@@ -222,14 +234,13 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
                 ).apply { setMargins(5, 5, 5, 10) }
             }
 
-
             val imagen = ImageButton(this).apply {
                 setImageResource(R.drawable.cafe)
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 adjustViewBounds = true
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    400
+                    300
                 ).apply { gravity = Gravity.CENTER }
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
 
@@ -259,6 +270,7 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
 
             contenedor.addView(nombre)
             contenedor.addView(imagen)
+            contenedor.addView(estado)
             gridLayout.addView(contenedor)
         }
     }

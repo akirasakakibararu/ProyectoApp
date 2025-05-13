@@ -58,7 +58,7 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTituloAlbaran"
-        app:srcCompat="@drawable/masomenos" />
+        app:srcCompat="@drawable/camara" />
 
     <TextView
         android:id="@+id/txtTituloAlbaran"
