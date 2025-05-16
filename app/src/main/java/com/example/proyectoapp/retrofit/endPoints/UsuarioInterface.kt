@@ -20,7 +20,10 @@ interface UsuarioInterface {
         @Query("username") username: String,
         @Query("password") password: String
     ): Call<String>
-
+    @POST("auth/loginEmpleado")
+    fun loginEmpleado(
+        @Query("username") username: String,
+    ): Call<String>
     @POST("usuarios")
     fun registerUser(
         @Header("Authorization") token: String,

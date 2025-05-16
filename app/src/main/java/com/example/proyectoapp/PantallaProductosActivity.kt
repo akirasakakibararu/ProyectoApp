@@ -61,7 +61,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         val id = datos?.getInt("userId")
 
         Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
-        loginUser(nombre.orEmpty(), contrasena.orEmpty())
+        //loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
         gridLayout = findViewById(R.id.idProductoLayout)
         searchView = findViewById(R.id.searchViewProductos)
@@ -69,7 +69,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         albaranes = findViewById(R.id.buttAlbaran)
         inventario = findViewById(R.id.buttInventario)
         btnVolver = findViewById(R.id.btnVolver)
-
+        getAllProductos()
         btnVolver.setOnClickListener {
             val intent = Intent(this, PantallaPrincipalActivity::class.java)
             startActivity(intent)
@@ -394,7 +394,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                     getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
                         .putString("auth_token", it)
                         .apply()
-                    getAllProductos()
+
                 }
 
             }

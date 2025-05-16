@@ -27,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.graphics.Bitmap
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isInvisible
 import com.example.proyectoapp.retrofit.adapter.insertarPassDialog
 import java.io.ByteArrayOutputStream
@@ -34,6 +35,7 @@ import java.io.ByteArrayOutputStream
 
 class PantallaPrincipalActivity : AppCompatActivity() {
     private lateinit var users: List<Usuario>
+    private lateinit var user: Usuario
 
     private val userApi: UsuarioInterface =
         UserInterface.retrofit.create(UsuarioInterface::class.java)
@@ -135,26 +137,19 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                 }
                 userImage.setOnClickListener {
                     Log.i("Producto", "Botón IMAGEN pulsado")
-
-                        val dialog = insertarPassDialog (
+                   user = usuario
+                    if (usuario.rol == "Empleado") {
+                        loginEmpleado(usuario.nombre)
+                    }else{
+                        val dialog = insertarPassDialog(
                             onPasswordInserted = { password ->
-                                val intent = Intent(
-                                    this@PantallaPrincipalActivity,
-                                    PantallaProductosActivity::class.java
-                                )
-                                intent.putExtra("usuario", usuario.idUsuario)
-                                intent.putExtra("nombre", usuario.nombre)
-                                intent.putExtra("email", usuario.email)
-                                intent.putExtra("contrasena", password)
-                                intent.putExtra("rol", usuario.rol)
-                                intent.putExtra("fotoPerfil", usuario.fotoPerfil)
-                                intent.putExtra("habilitado", usuario.habilitado)
-                                // Iniciar la nueva actividad
-                                startActivity(intent)
-                                finish()
+                                loginUser(usuario.nombre, password)
+
                             }
                         )
                         dialog.show(supportFragmentManager, "insertarPassDialog")
+                    }
+
 
                 }
 
@@ -199,5 +194,89 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+
+    private fun loginUser(username: String, password: String) {
+        val call = userApi.loginUser(username, password)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Login Error:", response.message())
+                    Toast.makeText(
+                        this@PantallaPrincipalActivity,
+                        "Contraseña incorrecta",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+
+                }
+                response.body()?.let {
+                    Log.i("Token:", it)
+                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                        .putString("auth_token", it)
+                        .apply()
+                    val intent = Intent(
+                        this@PantallaPrincipalActivity,
+                        PantallaProductosActivity::class.java
+                    )
+                    intent.putExtra("usuario", user.idUsuario)
+                    intent.putExtra("nombre", user.nombre)
+                    intent.putExtra("email", user.email)
+                    intent.putExtra("contrasena", password)
+                    intent.putExtra("rol", user.rol)
+                    intent.putExtra("fotoPerfil", user.fotoPerfil)
+                    intent.putExtra("habilitado", user.habilitado)
+                    // Iniciar la nueva actividad
+                    startActivity(intent)
+                    finish()
+                }
+
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+    private fun loginEmpleado(username: String) {
+        val call = userApi.loginEmpleado(username)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Login Error:", response.message())
+                    Toast.makeText(
+                        this@PantallaPrincipalActivity,
+                        "USUARIO deshabilitado",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+
+                }
+                response.body()?.let {
+                    Log.i("Token:", it)
+                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                        .putString("auth_token", it)
+                        .apply()
+                    val intent = Intent(
+                        this@PantallaPrincipalActivity,
+                        PantallaProductosActivity::class.java
+                    )
+                    intent.putExtra("usuario", user.idUsuario)
+                    intent.putExtra("nombre", user.nombre)
+                    intent.putExtra("email", user.email)
+                    intent.putExtra("rol", user.rol)
+                    intent.putExtra("fotoPerfil", user.fotoPerfil)
+                    intent.putExtra("habilitado", user.habilitado)
+                    // Iniciar la nueva actividad
+                    startActivity(intent)
+                    finish()
+                }
+
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
     }
 }
