@@ -1,7 +1,7 @@
 package com.example.proyectoapp.retrofit.pojos
 
 data class Usuario(
-    val idUsuario: Int,
+    var idUsuario: Int,
     var nombre: String,
     var email: String,
     var contrasena: String,
