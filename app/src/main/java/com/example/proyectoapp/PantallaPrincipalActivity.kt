@@ -246,7 +246,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                     Log.e("Login Error:", response.message())
                     Toast.makeText(
                         this@PantallaPrincipalActivity,
-                        "USUARIO deshabilitado",
+                        "Error al iniciar sesión",
                         Toast.LENGTH_LONG
                     ).show()
                     return
