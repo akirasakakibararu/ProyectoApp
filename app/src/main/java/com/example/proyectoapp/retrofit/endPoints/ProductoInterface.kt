@@ -2,6 +2,7 @@ package com.example.proyectoapp.retrofit.endPoints
 
 import com.example.proyectoapp.retrofit.pojos.Productos
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ProductoInterface {
@@ -41,4 +42,18 @@ interface ProductoInterface {
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ):  Call<Void>
+
+
+    @GET("api/productos/inventario")
+    fun getProductos(
+        @Header("Authorization") token: String,
+        @Query("filtro") filtro: String? = null
+    ): Call<List<Productos>>
+    @FormUrlEncoded
+    @POST("api/productos/inventario/enviar")
+    fun enviarInventario(
+        @Header("Authorization") token: String,
+        @Field("email") email: String,
+        @Field("filtro") filtro: String? = null
+    ): Call<Void>
 }

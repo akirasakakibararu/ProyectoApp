@@ -1,73 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPantallaAlbaranes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_light"
-    android:fillViewport="true">
+    tools:context=".PantallaAlbaranesActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Título -->
+    <TextView
+        android:id="@+id/textTitulo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:padding="16dp"
+        android:text="@string/albaranes"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/albaranes"
-            android:textSize="24sp" />
+    <!-- Botones horizontales -->
+    <LinearLayout
+        android:id="@+id/linearBotones"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/textTitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/butProveedor"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-            <ImageButton
-                android:id="@+id/btnVolver"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="TODO"
-                android:background="@android:color/holo_blue_light"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/volber" />
-            <Button
-                android:id="@+id/butProveedor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/nuevoProveedor" />
+            android:layout_weight="1"
+            android:text="@string/nuevoProveedor"
+            android:backgroundTint="#EC407AFF"
+            android:textColor="#FFFFFF" />
 
-            <Button
-                android:id="@+id/butNew"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/nuevoAlbaran" />
+        <Button
+            android:id="@+id/butNew"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#EC407A"
+            android:text="@string/nuevoAlbaran"
+            android:textColor="#FFFFFF" />
 
-            <Button
-                android:id="@+id/butInforme"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/informe" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/butCompletarAlbaran"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Completar Albarán"
+            android:backgroundTint="#EC407AFF"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/butInforme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/informe"
+            android:backgroundTint="#EC407A"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Botón Filtrar por mes actual -->
+    <Button
+        android:id="@+id/butFiltrarMesSemana"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Filtrar por mes actual"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/linearBotones"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnFiltroRango"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <!-- Botón Filtrar por fecha -->
+    <Button
+        android:id="@+id/btnFiltroRango"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Filtrar por fecha"
+        android:backgroundTint="#EC407A"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/linearBotones"
+        app:layout_constraintStart_toEndOf="@id/butFiltrarMesSemana"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1" />
+
+    <!-- Scrollable GridLayout de albaranes -->
+    <ScrollView
+        android:id="@+id/scrollAlbaranes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/butFiltrarMesSemana"
+        app:layout_constraintBottom_toTopOf="@id/btnVolver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/idAlbaranesGridLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:alignmentMode="alignMargins"
+            app:columnCount="2"
+            app:orientation="horizontal"
+            app:useDefaultMargins="true" />
 
-        </androidx.gridlayout.widget.GridLayout>
+    </ScrollView>
 
+    <!-- Botón volver centrado abajo -->
+    <ImageButton
+        android:id="@+id/btnVolver"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/holo_blue_light"
+        android:contentDescription="@string/volver"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/volber" />
 
-    </LinearLayout>
-</ScrollView>
-
+</androidx.constraintlayout.widget.ConstraintLayout>

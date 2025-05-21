@@ -28,6 +28,8 @@ import android.util.Base64
 import android.view.View
 import android.widget.SearchView
 import com.example.proyectoapp.retrofit.adapter.editarProductDialog
+import com.example.proyectoapp.retrofit.endPoints.MovimientosInterface
+import com.example.proyectoapp.retrofit.pojos.Movimientos
 import com.example.proyectoapp.retrofit.pojos.Usuario
 
 class PantallaProductosActivity : AppCompatActivity() {
@@ -36,8 +38,12 @@ class PantallaProductosActivity : AppCompatActivity() {
         UserInterface.retrofit.create(UsuarioInterface::class.java)
     private val productoApi: ProductoInterface =
         UserInterface.retrofit.create(ProductoInterface::class.java)
+    private val movimientoApi: MovimientosInterface =
+        UserInterface.retrofit.create(MovimientosInterface::class.java)
+    private lateinit var movimientos: List<Movimientos>
     private lateinit var productos: List<Productos>
     private lateinit var productoA: Productos
+    private lateinit var movimientoA: Movimientos
     private lateinit var gridLayout: GridLayout
     private lateinit var searchView: SearchView
     private lateinit var productosFiltrados: List<Productos>
@@ -45,7 +51,8 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var albaranes: Button
     private lateinit var inventario: Button
     private lateinit var btnVolver: ImageButton
-    private lateinit var usuario: Usuario
+    var usuarioId: Int = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +65,9 @@ class PantallaProductosActivity : AppCompatActivity() {
         val contrasena = datos?.getString("contrasena")
         val rol = datos?.getString("rol")
         val foto = datos?.getString("foto")
-        val id = datos?.getInt("userId")
+        val id = datos?.getInt("usuario")
 
         Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
-        //loginUser(nombre.orEmpty(), contrasena.orEmpty())
 
         gridLayout = findViewById(R.id.idProductoLayout)
         searchView = findViewById(R.id.searchViewProductos)
@@ -69,7 +75,11 @@ class PantallaProductosActivity : AppCompatActivity() {
         albaranes = findViewById(R.id.buttAlbaran)
         inventario = findViewById(R.id.buttInventario)
         btnVolver = findViewById(R.id.btnVolver)
+        if (id != null) {
+            usuarioId = id
+        }
         getAllProductos()
+
         btnVolver.setOnClickListener {
             val intent = Intent(this, PantallaPrincipalActivity::class.java)
             startActivity(intent)
@@ -87,6 +97,11 @@ class PantallaProductosActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+        inventario.setOnClickListener {
+            val intent = Intent(this, InventarioActivity::class.java)
+            startActivity(intent)
+        }
+
 
         perfiles.setOnClickListener {
             val intent = Intent(this, PantallaPerfilesActivity::class.java)
@@ -104,8 +119,6 @@ class PantallaProductosActivity : AppCompatActivity() {
             inventario.visibility = View.INVISIBLE
 
         }
-
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 filtrarProductos(query)
@@ -128,6 +141,7 @@ class PantallaProductosActivity : AppCompatActivity() {
 
         mostrarProductos(productosFiltrados)
     }
+
     private fun getAuthToken(): String? {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         return sharedPreferences.getString("auth_token", null)
@@ -149,6 +163,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                 productos = response.body() ?: emptyList()
                 productos.forEach { Log.i("Productos:", it.toString()) }
                 mostrarProductos(productos)
+                getAllMovimientos(usuarioId)
             }
 
             override fun onFailure(call: Call<List<Productos>>, t: Throwable) {
@@ -157,14 +172,48 @@ class PantallaProductosActivity : AppCompatActivity() {
         })
     }
 
+    private fun getAllMovimientos(id: Int) {
+        val token = "Bearer ${getAuthToken()}"
+        val call = movimientoApi.getbyUser(token, id)
+        call.enqueue(object : Callback<List<Movimientos>> {
+            override fun onResponse(
+                call: Call<List<Movimientos>>,
+                response: Response<List<Movimientos>>
+            ) {
+                if (!response.isSuccessful) {
+                    Log.e("Response err:", response.message())
+                    return
+                }
+                movimientos = response.body() ?: emptyList()
+                movimientos.forEach { Log.i("Productos:", it.toString()) }
+                val idsConMovimientos= mutableListOf<Int>()
+                idsConMovimientos.addAll(movimientos.map { it.productos })
+                Log.i("Ids con movimientos:", idsConMovimientos.toString())
+                val conteoIds = idsConMovimientos.groupingBy { it }.eachCount()
+
+                // 2. Ordenamos la lista de productos
+                val productosOrdenados = productos.sortedWith(compareByDescending<Productos> {
+                    conteoIds[it.idProducto] ?: 0  // Primero los más frecuentes en idProductos
+                }.thenBy {
+                    it.idProducto  // Desempatar si tienen el mismo conteo (opcional)
+                })
+                mostrarProductos(productosOrdenados)
+            }
+
+            override fun onFailure(call: Call<List<Movimientos>>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
 
     private fun mostrarProductos(productos: List<Productos>) {
         gridLayout.removeAllViews()
-        if(productos.count()<=2){
+        if (productos.count() <= 2) {
             gridLayout.columnCount = 1
-        }else if(productos.count()==3){
+        } else if (productos.count() == 3) {
             gridLayout.columnCount = 3
-        }else{
+        } else {
             gridLayout.columnCount = 5
         }
 
@@ -203,6 +252,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         }
         contAñadir.addView(btnAnadir)
         gridLayout.addView(contAñadir)
+
         for (producto in productos) {
             if (producto.habilitado == false) {
                 Log.i("Producto", "Producto deshabilitado: " + producto.nombre)
@@ -307,6 +357,16 @@ class PantallaProductosActivity : AppCompatActivity() {
                             numero.setText((numeroActual - 1).toString())
                             producto.stockActual = numero.getText().toString().toInt()
                             disminuirStock(producto.idProducto)
+                            val fecha = System.currentTimeMillis()
+                            movimientoA= Movimientos(
+                                0,
+                                producto.idProducto,
+                                usuarioId,
+                                "Menos",
+                                fecha.toString()
+                            )
+                            crearMovimiento()
+
                         }
                     }
                 }
@@ -327,9 +387,18 @@ class PantallaProductosActivity : AppCompatActivity() {
                         numero.setText((numeroActual + 1).toString())
                         producto.stockActual = numero.getText().toString().toInt()
                         aumentarStock(producto.idProducto)
+                        val fecha = System.currentTimeMillis()
+                        movimientoA= Movimientos(
+                            0,
+                            producto.idProducto,
+                            usuarioId,
+                            "Mas",
+                            fecha.toString()
+                        )
+                        crearMovimiento()
                     }
                 }
-                aplicarEstiloSegunStock(producto, contenedor, numero, btnMenos,nombre)
+                aplicarEstiloSegunStock(producto, contenedor, numero, btnMenos, nombre)
                 //contenedor de botones
                 contenedorBotones.addView(btnMenos)
                 contenedorBotones.addView(numero)
@@ -346,6 +415,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         }
 
     }
+
     fun aplicarEstiloSegunStock(
         producto: Productos,
         contenedor: LinearLayout,
@@ -368,42 +438,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             contenedor.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
         }
     }
-    private fun loginUser(username: String, password: String) {
-        val call = userApi.loginUser(username, password)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (!response.isSuccessful) {
-                    Log.e("Login Error:", response.message())
-                    val intent = Intent(
-                        this@PantallaProductosActivity,
-                        PantallaPrincipalActivity::class.java
 
-                    )
-                    Toast.makeText(
-                        this@PantallaProductosActivity,
-                        "Contraseña incorrecta",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    startActivity(intent)
-                    finish()
-                    return
-
-                }
-                response.body()?.let {
-                    Log.i("Token:", it)
-                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
-                        .putString("auth_token", it)
-                        .apply()
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("Error:", t.message ?: "Error desconocido")
-            }
-        })
-    }
 
     private fun aumentarStock(idProducto: Int) {
         val token = "Bearer ${getAuthToken()}"
@@ -457,7 +492,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                   Log.i("Stock disminuido", "Stock disminuido con éxito")
+                    Log.i("Stock disminuido", "Stock disminuido con éxito")
                     getAllProductos()
                 } else {
                     Log.e("Disminuir Stock Error:", response.message())
@@ -551,6 +586,28 @@ class PantallaProductosActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Productos>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+    private fun crearMovimiento() {
+        val token = "Bearer ${getAuthToken()}"
+        val call = movimientoApi.añadirMovimiento(token, movimientoA)
+
+        call.enqueue(object : Callback<Movimientos> {
+            override fun onResponse(call: Call<Movimientos>, response: Response<Movimientos>) {
+                if (!response.isSuccessful) {
+                    Log.e("Añadir Movimiento Error:", response.message())
+
+                    return
+                }
+                response.body()?.let {
+                    Log.i("Movimiento añadido:", it.toString())
+                    getAllProductos()
+                }
+            }
+
+            override fun onFailure(call: Call<Movimientos>, t: Throwable) {
                 Log.e("Error:", t.message ?: "Error desconocido")
             }
         })

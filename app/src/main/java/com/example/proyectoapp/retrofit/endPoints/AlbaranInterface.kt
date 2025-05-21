@@ -1,6 +1,7 @@
 package com.example.proyectoapp.retrofit.endPoints
 
 import com.example.proyectoapp.retrofit.pojos.Albaran
+import com.example.proyectoapp.retrofit.pojos.EnviarInformeRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -9,6 +10,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AlbaranInterface {
 
@@ -34,5 +36,23 @@ interface AlbaranInterface {
     fun eliminarProducto(
         @Header("Authorization") token: String,
         @Path("id") id: Int
+    ): Call<Void>
+
+    @GET("fecha")
+    fun getAlbaranesPorRango(
+        @Header("Authorization") token: String,
+        @Query("fechaInicio") fechaInicio: String,
+        @Query("fechaFin") fechaFin: String
+    ): Call<List<Albaran>>
+
+    @POST("api/albaranes/informe")
+    fun generarInforme(
+        @Header("Authorization") token: String,
+        @Body ids: List<Int>
+    ): Call<Map<String, Any>>
+    @POST("api/albaranes/informe/enviar")
+    fun enviarInformePorCorreo(
+        @Header("Authorization") token: String,
+        @Body request: EnviarInformeRequest
     ): Call<Void>
 }

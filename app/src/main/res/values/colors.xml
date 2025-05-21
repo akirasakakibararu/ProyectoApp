@@ -20,5 +20,7 @@
     <color name="grisazul">#B0BEC5</color>
     <color name="teal_overlay">#9900E676</color>
     <color name="indigo_overlay">#993F51B5</color>
+    <color name="row_even">#FFFFFF</color>
+    <color name="row_odd">#F0F0F0</color>
 
 </resources>

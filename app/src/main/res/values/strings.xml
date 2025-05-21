@@ -36,7 +36,7 @@
     <string name="habilitar">Habilitado</string>
     <string name="desavilitar">Deshabilitado</string>
     <string name="editar">Editar Producto</string>
-    <string name="editUser">Editar Usuario</string>"
+    <string name="editUser">Editar Usuario</string>
     <string name="precio">Precio</string>
     <string name="stock">Cantidad</string>
     <string name="stockMin">Cantidad Minima</string>
@@ -52,18 +52,39 @@
     <string name="albaranes">Alabaranes</string>
     <string name="inventario">Inventario</string>
     <!-- Albaranes -->
+    <string name="add_detalle">Agregar detalle</string>
+    <string name="volver">Volver</string>
+
     <string name="nuevoAlbaran">Nuevo Albaran</string>
     <string name="fecha">Fecha</string>
     <string name="nif">NIF</string>
     <string name="importe">Cantidad</string>
     <string name="estado">Pagado</string>
-    <!-- Proveedores -->
+
+     <string name="nuevo_proveedor">Nuevo Proveedor</string>
+    <string name="nuevo_albaran">Nuevo Albarán</string>
+    <string name="completar_albaran">Completar Albarán</string>
+     <string name="mes_actual">Filtrar por mes actual</string>
+    <string name="filtrar_rango">Filtrar por fecha</string>
+     <!-- Proveedores -->
     <string name="nuevoProveedor">Nuevo Proveedor</string>
     <string name="telefono">Telefono</string>
     <string name="direccion">Dirección</string>
     <string name="informe">Informe</string>
     <!-- Usuarios -->
+    <string name="id">ID</string>
+i
+    <!-- inventario -->
 
+    <string-array name="filtros">
+        <item>Todos los productos</item>
+        <item>Productos en mínimos</item>
+        <item>Productos deshabilitados</item>
+    </string-array>
+    <string name="hint_email">Introduce email para enviar</string>
+    <string name="btn_enviar_inventario">Enviar Inventario por correo</string>
+    <string name="btn_cancelar">Cancelar</string>
 
 
 </resources>
+

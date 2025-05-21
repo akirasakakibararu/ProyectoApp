@@ -1,13 +1,11 @@
 package com.example.proyectoapp.retrofit.pojos
 
 data class Movimientos(
-    val id: Int,
-    val id_albaran: Int,
-    val id_producto: Int,
-    val id_usuario: Int,
+    val idMovimiento: Int,
+    var productos: Int,
+    val usuarios: Int,
     val tipo: String,
-    val cantidad: Int,
-    val fecha: String
+    val fechaMovimiento: String
 
 ){
 
