@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_light"
+    android:background="@color/grisazul"
     android:fillViewport="true">
 
     <LinearLayout
@@ -24,7 +24,7 @@
                 android:id="@+id/btnVolver"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@android:color/holo_blue_light"
+                android:background="@color/grisazul"
                 android:scaleType="fitCenter"
                 android:contentDescription="TODO"
                 app:srcCompat="@drawable/volber" />

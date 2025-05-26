@@ -100,7 +100,7 @@
         android:id="@+id/btnAnadir"
         android:layout_width="189dp"
         android:layout_height="75dp"
-        android:backgroundTint="#26C6DA"
+        android:backgroundTint="#EC407AFF"
         android:text="@string/anadir"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"

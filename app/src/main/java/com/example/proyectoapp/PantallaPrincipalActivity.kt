@@ -50,10 +50,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         getAllUsers()
         btnVolver = findViewById(R.id.btnVolver)
         btnVolver.isInvisible = true
-
-
     }
-
     private fun getAllUsers() {
         val call = userApi.getAllUsers()
         call.enqueue(object : Callback<List<Usuario>> {
@@ -72,7 +69,6 @@ class PantallaPrincipalActivity : AppCompatActivity() {
             }
         })
     }
-
     private fun mostrarUsuarios(usuarios: List<Usuario>) {
         gridLayout.removeAllViews()
         gridLayout.columnCount = 5
@@ -138,17 +134,8 @@ class PantallaPrincipalActivity : AppCompatActivity() {
                 userImage.setOnClickListener {
                     Log.i("Producto", "Botón IMAGEN pulsado")
                    user = usuario
-                    if (usuario.rol == "Empleado") {
-                        loginEmpleado(usuario.nombre)
-                    }else{
-                        val dialog = insertarPassDialog(
-                            onPasswordInserted = { password ->
-                                loginUser(usuario.nombre, password)
+                    loginEmpleado(usuario.nombre)
 
-                            }
-                        )
-                        dialog.show(supportFragmentManager, "insertarPassDialog")
-                    }
 
 
                 }
@@ -196,48 +183,7 @@ class PantallaPrincipalActivity : AppCompatActivity() {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
-    private fun loginUser(username: String, password: String) {
-        val call = userApi.loginUser(username, password)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (!response.isSuccessful) {
-                    Log.e("Login Error:", response.message())
-                    Toast.makeText(
-                        this@PantallaPrincipalActivity,
-                        "Contraseña incorrecta",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return
 
-                }
-                response.body()?.let {
-                    Log.i("Token:", it)
-                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
-                        .putString("auth_token", it)
-                        .apply()
-                    val intent = Intent(
-                        this@PantallaPrincipalActivity,
-                        PantallaProductosActivity::class.java
-                    )
-                    intent.putExtra("usuario", user.idUsuario)
-                    intent.putExtra("nombre", user.nombre)
-                    intent.putExtra("email", user.email)
-                    intent.putExtra("contrasena", password)
-                    intent.putExtra("rol", user.rol)
-                    intent.putExtra("fotoPerfil", user.fotoPerfil)
-                    intent.putExtra("habilitado", user.habilitado)
-                    // Iniciar la nueva actividad
-                    startActivity(intent)
-                    finish()
-                }
-
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("Error:", t.message ?: "Error desconocido")
-            }
-        })
-    }
     private fun loginEmpleado(username: String) {
         val call = userApi.loginEmpleado(username)
         call.enqueue(object : Callback<String> {

@@ -44,6 +44,8 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_enviar_inventario"
         android:layout_marginEnd="8dp"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnCancelar" />
@@ -53,6 +55,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_cancelar"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnEnviarCorreo"
         app:layout_constraintEnd_toEndOf="parent" />

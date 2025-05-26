@@ -28,6 +28,7 @@ import android.util.Base64
 import android.view.View
 import android.widget.SearchView
 import com.example.proyectoapp.retrofit.adapter.editarProductDialog
+import com.example.proyectoapp.retrofit.adapter.insertarPassDialog
 import com.example.proyectoapp.retrofit.endPoints.MovimientosInterface
 import com.example.proyectoapp.retrofit.pojos.Movimientos
 import com.example.proyectoapp.retrofit.pojos.Usuario
@@ -52,7 +53,7 @@ class PantallaProductosActivity : AppCompatActivity() {
     private lateinit var inventario: Button
     private lateinit var btnVolver: ImageButton
     var usuarioId: Int = 0
-
+    private lateinit var user: Usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,20 +65,36 @@ class PantallaProductosActivity : AppCompatActivity() {
         val email = datos?.getString("email")
         val contrasena = datos?.getString("contrasena")
         val rol = datos?.getString("rol")
-        val foto = datos?.getString("foto")
+        val foto = datos?.getString("fotoPerfil")
         val id = datos?.getInt("usuario")
-
-        Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id")
-
+        Log.e("Datos recibidos", "Nombre: $nombre, Email: $email, ID: $id,Rol: $rol")
+        if (nombre != null && email != null && rol != null && id != null && foto != null) {
+            user = Usuario(
+                idUsuario = id,
+                nombre = nombre,
+                email = email,
+                contrasena = "",
+                rol = rol,
+                fotoPerfil = foto,
+                habilitado = true
+            )
+        }
         gridLayout = findViewById(R.id.idProductoLayout)
         searchView = findViewById(R.id.searchViewProductos)
         perfiles = findViewById(R.id.butPerfil)
         albaranes = findViewById(R.id.buttAlbaran)
         inventario = findViewById(R.id.buttInventario)
         btnVolver = findViewById(R.id.btnVolver)
+
+        if (rol.toString() == "Empleado") {
+            perfiles.visibility = View.INVISIBLE
+            albaranes.visibility = View.INVISIBLE
+            inventario.visibility = View.INVISIBLE
+        }
         if (id != null) {
             usuarioId = id
         }
+
         getAllProductos()
 
         btnVolver.setOnClickListener {
@@ -85,33 +102,60 @@ class PantallaProductosActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        albaranes.setOnClickListener {
-            val intent = Intent(this, PantallaAlbaranesActivity::class.java)
 
-            intent.putExtra("userId", id)
-            intent.putExtra("nombre", nombre)
-            intent.putExtra("email", email)
-            intent.putExtra("contrasena", contrasena)
-            intent.putExtra("rol", rol)
-            intent.putExtra("foto", foto)
-            startActivity(intent)
-            finish()
+        albaranes.setOnClickListener {
+            if (contrasena != null) {
+                val intent = Intent(this, PantallaAlbaranesActivity::class.java)
+                intent.putExtra("usuario", id)
+                intent.putExtra("nombre", nombre)
+                intent.putExtra("email", email)
+                intent.putExtra("contrasena", contrasena)
+                intent.putExtra("rol", rol)
+                intent.putExtra("foto", foto)
+                startActivity(intent)
+                finish()
+            } else if (nombre != null) {
+                intentarAccederASeccion(nombre, PantallaAlbaranesActivity::class.java)
+            } else {
+                Log.e("Error", "Error en el nombre del usuario")
+            }
+
         }
         inventario.setOnClickListener {
-            val intent = Intent(this, InventarioActivity::class.java)
-            startActivity(intent)
+            if (contrasena != null) {
+                val intent = Intent(this, InventarioActivity::class.java)
+                intent.putExtra("usuario", id)
+                intent.putExtra("nombre", nombre)
+                intent.putExtra("email", email)
+                intent.putExtra("contrasena", contrasena)
+                intent.putExtra("rol", rol)
+                intent.putExtra("foto", foto)
+                startActivity(intent)
+                finish()
+            } else if (nombre != null) {
+                intentarAccederASeccion(nombre, InventarioActivity::class.java)
+            } else {
+                Log.e("Error", "Error en el nombre del usuario")
+            }
         }
 
-
         perfiles.setOnClickListener {
-            val intent = Intent(this, PantallaPerfilesActivity::class.java)
-            intent.putExtra("userId", id)
-            intent.putExtra("nombre", nombre)
-            intent.putExtra("email", email)
-            intent.putExtra("contrasena", contrasena)
-            intent.putExtra("rol", rol)
-            startActivity(intent)
-            finish()
+            if (contrasena != null) {
+                val intent = Intent(this, PantallaPerfilesActivity::class.java)
+                intent.putExtra("usuario", id)
+                intent.putExtra("nombre", nombre)
+                intent.putExtra("email", email)
+                intent.putExtra("contrasena", contrasena)
+                intent.putExtra("rol", rol)
+                intent.putExtra("foto", foto)
+                startActivity(intent)
+                finish()
+            } else if (nombre != null) {
+                intentarAccederASeccion(nombre, PantallaPerfilesActivity::class.java)
+            } else {
+                Log.e("Error", "Error en el nombre del usuario")
+            }
+
         }
         if (rol == "Empleado") {
             perfiles.visibility = View.INVISIBLE
@@ -132,6 +176,59 @@ class PantallaProductosActivity : AppCompatActivity() {
         })
     }
 
+    fun intentarAccederASeccion(nombre: String, seccion: Class<*>) {
+        val dialog = insertarPassDialog(
+            onPasswordInserted = { password ->
+                if (password.isNotBlank()) {
+                    loginUser(nombre, password, seccion)
+                }
+            }
+        )
+        dialog.show(supportFragmentManager, "insertarPassDialog")
+    }
+
+    private fun loginUser(username: String, password: String, activity: Class<*>) {
+        val call = userApi.loginUser(username, password)
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (!response.isSuccessful) {
+                    Log.e("Login Error:", response.message())
+                    Toast.makeText(
+                        this@PantallaProductosActivity,
+                        "Contraseña incorrecta",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+
+                }
+                response.body()?.let {
+                    Log.i("Token:", it)
+                    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                        .putString("auth_token", it)
+                        .apply()
+                    if (::user.isInitialized) {
+                        val intent = Intent(this@PantallaProductosActivity, activity)
+
+                        intent.putExtra("usuario", user.idUsuario)
+                        intent.putExtra("nombre", user.nombre)
+                        intent.putExtra("email", user.email)
+                        intent.putExtra("contrasena", password)
+                        intent.putExtra("rol", user.rol)
+                        intent.putExtra("fotoPerfil", user.fotoPerfil)
+                        startActivity(intent)
+                        finish()
+                    }
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("Error:", t.message ?: "Error desconocido")
+            }
+        })
+    }
+
     private fun filtrarProductos(query: String?) {
         val texto = query?.trim()?.lowercase().orEmpty()
         productosFiltrados = productos.filter {
@@ -146,6 +243,7 @@ class PantallaProductosActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         return sharedPreferences.getString("auth_token", null)
     }
+
 
     private fun getAllProductos() {
         val token = "Bearer ${getAuthToken()}"
@@ -186,7 +284,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                 }
                 movimientos = response.body() ?: emptyList()
                 movimientos.forEach { Log.i("Productos:", it.toString()) }
-                val idsConMovimientos= mutableListOf<Int>()
+                val idsConMovimientos = mutableListOf<Int>()
                 idsConMovimientos.addAll(movimientos.map { it.productos })
                 Log.i("Ids con movimientos:", idsConMovimientos.toString())
                 val conteoIds = idsConMovimientos.groupingBy { it }.eachCount()
@@ -301,7 +399,8 @@ class PantallaProductosActivity : AppCompatActivity() {
                 imageView.setOnClickListener {
                     Log.i("Producto", "Botón IMAGEN pulsado")
                     productoA = producto
-                    val dialog = editarProductDialog(producto,
+                    val dialog = editarProductDialog(
+                        producto,
                         onProductoEditado = { productoEditado ->
                             editarProducto(productoEditado)
                         },
@@ -358,7 +457,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                             producto.stockActual = numero.getText().toString().toInt()
                             disminuirStock(producto.idProducto)
                             val fecha = System.currentTimeMillis()
-                            movimientoA= Movimientos(
+                            movimientoA = Movimientos(
                                 0,
                                 producto.idProducto,
                                 usuarioId,
@@ -388,7 +487,7 @@ class PantallaProductosActivity : AppCompatActivity() {
                         producto.stockActual = numero.getText().toString().toInt()
                         aumentarStock(producto.idProducto)
                         val fecha = System.currentTimeMillis()
-                        movimientoA= Movimientos(
+                        movimientoA = Movimientos(
                             0,
                             producto.idProducto,
                             usuarioId,
@@ -590,6 +689,7 @@ class PantallaProductosActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun crearMovimiento() {
         val token = "Bearer ${getAuthToken()}"
         val call = movimientoApi.añadirMovimiento(token, movimientoA)

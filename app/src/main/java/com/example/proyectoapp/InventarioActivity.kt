@@ -35,7 +35,13 @@ class InventarioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventario)
-
+        val datos = this.intent.extras
+        val nombre = datos?.getString("nombre")
+        val email = datos?.getString("email")
+        val contrasena = datos?.getString("contrasena")
+        val rol = datos?.getString("rol")
+        val foto = datos?.getString("fotoPerfil")
+        val id = datos?.getInt("usuario")
         // 1) Vistas
         spinnerFiltro     = findViewById(R.id.spinnerFiltro)
         recyclerProductos = findViewById(R.id.recyclerProductos)
@@ -82,6 +88,12 @@ class InventarioActivity : AppCompatActivity() {
         // 5) Botón cancelar filtro
         btnCancelarFiltro.setOnClickListener {
             val intent = Intent(this, PantallaProductosActivity::class.java)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("usuario", email)
+            intent.putExtra("contrasena", contrasena)
+            intent.putExtra("rol", rol)
+            intent.putExtra("fotoPerfil", foto)
+            intent.putExtra("usuario", id)
             startActivity(intent)
             finish()
         }

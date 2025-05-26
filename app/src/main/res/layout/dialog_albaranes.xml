@@ -23,28 +23,36 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:text="ID"
+                    android:text="@string/id"
+                    android:backgroundTint="#EC407AFF"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="2"
-                    android:text="Fecha"
+                    android:text="@string/fecha"
+                    android:backgroundTint="#EC407AFF"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="2"
-                    android:text="Estado"
+                    android:text="@string/esta"
+                    android:backgroundTint="#EC407AFF"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="2"
-                    android:text="NIF"
+                    android:text="@string/nif"
+                    android:backgroundTint="#EC407AFF"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:padding="8dp" />
             </TableRow>

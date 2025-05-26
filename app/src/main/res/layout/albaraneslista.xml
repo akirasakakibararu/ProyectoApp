@@ -6,7 +6,7 @@
     android:id="@+id/layoutPantallaAlbaranes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_light"
+    android:background="@color/grisazul"
     tools:context=".PantallaAlbaranesActivity">
 
     <!-- Título -->
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="#EC407A"
+            android:backgroundTint="#EC407AFF"
             android:text="@string/nuevoAlbaran"
             android:textColor="#FFFFFF" />
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/informe"
-            android:backgroundTint="#EC407A"
+            android:backgroundTint="#EC407AFF"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
@@ -98,7 +98,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Filtrar por fecha"
-        android:backgroundTint="#EC407A"
+        android:backgroundTint="#EC407AFF"
         android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/linearBotones"
         app:layout_constraintStart_toEndOf="@id/butFiltrarMesSemana"
@@ -135,7 +135,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
-        android:background="@android:color/holo_blue_light"
+        android:background="@color/grisazul"
         android:contentDescription="@string/volver"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"

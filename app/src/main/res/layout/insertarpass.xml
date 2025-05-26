@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/grisazul"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -41,6 +42,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         android:text="Ingresar"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#fff"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

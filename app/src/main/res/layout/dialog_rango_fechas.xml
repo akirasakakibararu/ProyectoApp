@@ -18,6 +18,8 @@
     <Button
         android:id="@+id/btnFechaInicio"
         android:text="Elegir fecha inicio"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView
@@ -34,6 +36,8 @@
     <Button
         android:id="@+id/btnFechaFin"
         android:text="Elegir fecha fin"
+        android:backgroundTint="#EC407AFF"
+        android:textColor="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView
@@ -46,6 +50,7 @@
     <Button
         android:id="@+id/btnAceptar"
         android:text="Aceptar"
+        android:backgroundTint="#EC407AFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"/>

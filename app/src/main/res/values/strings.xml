@@ -17,7 +17,7 @@
     <integer name="columnCount">1</integer>
     <integer name="rowCount">1</integer>
     <string name="nombre">Nombre</string>
-    <string name="usuarios">Usuarios</string>
+    <string name="usuarios">Seleccione su Usuario</string>
     <string name="contrasena">Inserte su Contraseña</string>
     <string name="nuevo">Nuevo Producto</string>
     <string name="nuevoUsuario">Nuevo Usuario</string>
@@ -60,6 +60,7 @@
     <string name="nif">NIF</string>
     <string name="importe">Cantidad</string>
     <string name="estado">Pagado</string>
+    <string name="esta">Estado</string>
 
      <string name="nuevo_proveedor">Nuevo Proveedor</string>
     <string name="nuevo_albaran">Nuevo Albarán</string>

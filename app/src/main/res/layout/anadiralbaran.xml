@@ -97,7 +97,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/anadir"
-        android:backgroundTint="#26C6DA"
+        android:backgroundTint="#EC407AFF"
         android:textColor="#fff"
         app:layout_constraintTop_toTopOf="@+id/btnCancel"
         app:layout_constraintStart_toEndOf="@+id/btnCancel"

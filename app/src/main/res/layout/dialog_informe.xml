@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:stretchColumns="*"
     android:padding="16dp"
-    android:background="#CCCCCC">
+    android:background="@color/grisazul">
 
     <!-- Fila encabezado -->
     <TableRow

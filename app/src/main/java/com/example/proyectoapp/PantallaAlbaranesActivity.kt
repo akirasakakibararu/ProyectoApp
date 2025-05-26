@@ -85,12 +85,15 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         gridLayout = findViewById(R.id.idAlbaranesGridLayout)
 
         val datos = this.intent.extras
+
         val nombre = datos?.getString("nombre")
         val email = datos?.getString("email")
         val contrasena = datos?.getString("contrasena")
         val rol = datos?.getString("rol")
-        val foto = datos?.getString("foto")
-        val id = datos?.getInt("userId")
+        val foto = datos?.getString("fotoPerfil")
+        val id = datos?.getInt("usuario")
+
+
         val btnFiltro = findViewById<Button>(R.id.butFiltrarMesSemana)
         val listaAlbaranes = findViewById<GridLayout>(R.id.idAlbaranesGridLayout)
         val butCompletarAlbaran = findViewById<Button>(R.id.butCompletarAlbaran)
@@ -126,12 +129,13 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         }
         btnVolver.setOnClickListener {
             val intent = android.content.Intent(this, PantallaProductosActivity::class.java)
-            intent.putExtra("userId", id)
+            intent.putExtra("usuario", id)
             intent.putExtra("nombre", nombre)
             intent.putExtra("email", email)
             intent.putExtra("contrasena", contrasena)
             intent.putExtra("rol", rol)
-            intent.putExtra("foto", foto)
+            intent.putExtra("fotoPerfil", foto)
+
             startActivity(intent)
             finish()
         }
@@ -147,8 +151,6 @@ class PantallaAlbaranesActivity : AppCompatActivity() {
         }
 
         getAllAlbaranes()
-        //getAllProveedores()
-
 
     }
 
